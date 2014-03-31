@@ -26,9 +26,6 @@
 #define PI 3.14159265f
 // Conversion multiplier for converting from degrees to Radians for some calculations
 #define DEG_TO_RAD PI/180.0f
-// Window size parameters
-#define WIN_HEIGHT 640.0f
-#define WIN_WIDTH 640.0f
 
 // Grid size X by X
 #define GRID_SIZE 100.0f
@@ -47,6 +44,101 @@ typedef GLfloat color3[3];
 // Keep track of current camera position and set the default
 GLfloat cameraPosition[] = {4, 3, 4, 0, 0, 0};
 
+// Window size parameters
+GLfloat windowWidth  = 640.0;
+GLfloat windowHeight = 640.0;
+
+// Key booleans
+// Not full screen by default
+GLint isFullScreen = 0;
+// Wire rendering on by default
+GLint isWireRendering = 1;
+
+// This handles full screen or getting out of full screen
+void fullScreen() {
+	if(isFullScreen) {
+		glutFullScreen();
+	} else {
+		glutReshapeWindow(640, 640);
+		glutPositionWindow(0, 0);
+	}
+}
+
+// Draw the grid and basic frame of reference
+void drawFrameReferenceGrid() {
+	// Setup for loop
+	int i = 0;
+	int j = 0;
+
+	// Call draw functions here
+	glPushMatrix();
+
+	// Set line width to 1
+	glLineWidth(1);
+
+	// Draw the grid of size grid size and translate it to the origin
+	glTranslatef(GRID_SIZE/2, 0.0, -GRID_SIZE/2);
+		// Enable or disable wirerendering based on button press
+		if(isWireRendering) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		} else {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+
+		// Draw a row in the grid
+		for(i = 0;i<GRID_SIZE;i++) {
+			glTranslatef(-GRID_SIZE, 0.0, 0.0f);
+			glTranslatef(0.0, 0.0, 1.0);
+			for(j = 0;j<GRID_SIZE;j++) {
+				glTranslatef(1.0, 0.0, 0.0);
+				// Draw the grid
+				glBegin(GL_QUADS);
+					// Loop through to draw each square
+					glColor3f(0.8f, 0.8f, 1.0f);
+					glVertex3f(0.0f, 0.0f, 0.0f);
+					glVertex3f(0.0f, 0.0f, 1.0f);
+					glVertex3f(1.0f, 0.0f, 1.0f);
+					glVertex3f(1.0f, 0.0f, 0.0f);
+				glEnd();
+			}
+		}
+	glPopMatrix();
+
+	// Draw frame of reference for origin
+	// X direction
+	glPushMatrix();
+		// Move slightly above so it draws above grid lines
+		glTranslatef(0.0, 0.05, 0.0);
+		// Set line width to 5
+		glLineWidth(5);
+
+		// Draw the X direction
+		glBegin(GL_LINES);
+			glColor3f(1.0f, 0.0f, 0.0f);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+			glVertex3f(2.0f, 0.0f, 0.0f);
+		glEnd();
+
+		// Y direction
+		glBegin(GL_LINES);
+			glColor3f(0.0f, 1.0f, 0.0f);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+			glVertex3f(0.0f, 2.0f, 0.0f);
+		glEnd();
+
+		// Z direction
+		glBegin(GL_LINES);
+			glColor3f(0.0f, 0.0f, 1.0f);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+			glVertex3f(0.0f, 0.0f, 2.0f);
+		glEnd();
+
+		// Draw circle in middle
+		glColor3f(1.0, 1.0, 1.0);
+		glutSolidSphere(0.2, 20, 20);
+	glPopMatrix();
+}
+
 /************************************************************************
 
 	Function:		normalKeys
@@ -56,7 +148,26 @@ GLfloat cameraPosition[] = {4, 3, 4, 0, 0, 0};
 
 *************************************************************************/
 void normalKeys(unsigned char key, int x, int y) {
-	
+	switch(key) {
+		// Toggle full screen
+		case 'f':
+			// Set full screen to opposite
+			isFullScreen = !isFullScreen;
+			// Call fullscreen function
+			fullScreen();
+			break;
+		// Toggle full screen
+		case 'w':
+			// Set full screen to opposite
+			isWireRendering = !isWireRendering;
+			break;
+		// Quit the program gracefully
+		case 'q':
+			exit(0);
+			break;
+		default:
+			break;
+	}
 }
 
 /************************************************************************
@@ -117,6 +228,10 @@ void printOutControls() {
 *************************************************************************/
 void init(void)
 {
+	// Set initial window position and size
+	glutReshapeWindow(windowWidth, windowHeight);
+	glutPositionWindow(0, 0);
+
 	// Enable the depth test
 	glEnable(GL_DEPTH_TEST);
 
@@ -130,7 +245,7 @@ void init(void)
     glLoadIdentity();
 
     // gluPerspective(fovy, aspect, near, far)
-    gluPerspective(90, 1, 0.1, 40000);
+    gluPerspective(90, windowWidth/windowHeight, 0.1, 40000);
 
     // change into model-view mode so that we can change the object positions
 	glMatrixMode(GL_MODELVIEW);
@@ -157,6 +272,37 @@ void myIdle(void)
 
 /************************************************************************
 
+	Function:		myResize
+
+	Description:	Handles a user resize of the window. 
+
+*************************************************************************/
+void myResize(int newWidth, int newHeight)
+{
+
+	// Update width of window
+	windowWidth = newWidth;
+	// Update height of window
+	windowHeight = newHeight;
+
+	// Update the viewport to still be all of the window
+	glViewport (0, 0, windowWidth, windowHeight);
+
+	// Change camera properties
+    glMatrixMode(GL_PROJECTION);
+
+	// Load identity matrix
+    glLoadIdentity();
+
+    // Modify the gluPerspective (fovy, aspect, near, far)
+    gluPerspective(45, windowWidth/windowHeight, 0.1, 40000); 
+
+    // Back into modelview
+	glMatrixMode(GL_MODELVIEW);
+}
+
+/************************************************************************
+
 	Function:		display
 
 	Description:	Clears color and depth buffer. Sets up the camera position
@@ -166,8 +312,6 @@ void myIdle(void)
 *************************************************************************/
 void display(void)
 {
-	int i = 0;
-	int j = 0;
 	// Clear the screen and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -177,66 +321,8 @@ void display(void)
 	// Set up the camera position
 	gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2], cameraPosition[3], cameraPosition[4], cameraPosition[5], 0, 1, 0);
 
-	// Call draw functions here
-	glPushMatrix();
-
-	// Set line width to 1
-	glLineWidth(1);
-
-	// Draw the grid of size grid size and translate it to the origin
-	glTranslatef(GRID_SIZE/2, 0.0, -GRID_SIZE/2);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		for(i = 0;i<GRID_SIZE;i++) {
-			glTranslatef(-GRID_SIZE, 0.0, 0.0f);
-			glTranslatef(0.0, 0.0, 1.0);
-			for(j = 0;j<GRID_SIZE;j++) {
-				glTranslatef(1.0, 0.0, 0.0);
-				// Draw the grid
-				glBegin(GL_QUADS);
-					// Loop through to draw each square
-					glColor3f(1.0f, 1.0f, 1.0f);
-					glVertex3f(0.0f, 0.0f, 0.0f);
-					glVertex3f(0.0f, 0.0f, 1.0f);
-					glVertex3f(1.0f, 0.0f, 1.0f);
-					glVertex3f(1.0f, 0.0f, 0.0f);
-				glEnd();
-			}
-		}
-	glPopMatrix();
-
-	// Draw frame of reference for origin
-	// X direction
-	glPushMatrix();
-		// Move slightly above so it draws above grid lines
-		glTranslatef(0.0, 0.05, 0.0);
-		// Set line width to 5
-		glLineWidth(5);
-
-		// Draw the X direction
-		glBegin(GL_LINES);
-			glColor3f(1.0f, 0.0f, 0.0f);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-			glVertex3f(2.0f, 0.0f, 0.0f);
-		glEnd();
-
-		// Y direction
-		glBegin(GL_LINES);
-			glColor3f(0.0f, 1.0f, 0.0f);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-			glVertex3f(0.0f, 2.0f, 0.0f);
-		glEnd();
-
-		// Z direction
-		glBegin(GL_LINES);
-			glColor3f(0.0f, 0.0f, 1.0f);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-			glVertex3f(0.0f, 0.0f, 2.0f);
-		glEnd();
-
-		// Draw circle in middle
-		glColor3f(1.0, 1.0, 1.0);
-		glutSolidSphere(0.2, 20, 20);
-	glPopMatrix();
+	// Draw the frame of reference and basic grid
+	drawFrameReferenceGrid();
 
 	// Swap the drawing buffers here
 	glutSwapBuffers();
@@ -260,7 +346,7 @@ void main(int argc, char** argv)
 	// set display mode
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	// set window size
-	glutInitWindowSize(WIN_HEIGHT, WIN_WIDTH);
+	glutInitWindowSize(windowHeight, windowWidth);
 	// open the screen window
 	glutCreateWindow("Flight Sim");
 	//initialize the rendering context
@@ -275,6 +361,8 @@ void main(int argc, char** argv)
 	glutSpecialUpFunc(specialKeysReleased);
 	// register redraw function
 	glutDisplayFunc(display);
+	// Register the resize function
+	glutReshapeFunc(myResize); 
 	// go into a perpetual loop
 	glutMainLoop();
 }

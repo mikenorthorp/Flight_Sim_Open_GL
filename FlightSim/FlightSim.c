@@ -30,6 +30,9 @@
 #define WIN_HEIGHT 640.0f
 #define WIN_WIDTH 640.0f
 
+// Grid size X by X
+#define GRID_SIZE 100.0f
+
 /* Global variables */
 
 /* Typedefs and structs */
@@ -42,9 +45,7 @@ typedef GLfloat color3[3];
 /* Position variables for camera and ship */
 
 // Keep track of current camera position and set the default
-GLfloat cameraPosition[] = {0, 500, 2500, 0, 0, 0};
-// Keep track of plane position
-GLfloat shipPosition[] = {0, 300, 2200};
+GLfloat cameraPosition[] = {4, 3, 4, 0, 0, 0};
 
 /************************************************************************
 
@@ -165,7 +166,8 @@ void myIdle(void)
 *************************************************************************/
 void display(void)
 {
-
+	int i = 0;
+	int j = 0;
 	// Clear the screen and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -176,7 +178,65 @@ void display(void)
 	gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2], cameraPosition[3], cameraPosition[4], cameraPosition[5], 0, 1, 0);
 
 	// Call draw functions here
+	glPushMatrix();
 
+	// Set line width to 1
+	glLineWidth(1);
+
+	// Draw the grid of size grid size and translate it to the origin
+	glTranslatef(GRID_SIZE/2, 0.0, -GRID_SIZE/2);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		for(i = 0;i<GRID_SIZE;i++) {
+			glTranslatef(-GRID_SIZE, 0.0, 0.0f);
+			glTranslatef(0.0, 0.0, 1.0);
+			for(j = 0;j<GRID_SIZE;j++) {
+				glTranslatef(1.0, 0.0, 0.0);
+				// Draw the grid
+				glBegin(GL_QUADS);
+					// Loop through to draw each square
+					glColor3f(1.0f, 1.0f, 1.0f);
+					glVertex3f(0.0f, 0.0f, 0.0f);
+					glVertex3f(0.0f, 0.0f, 1.0f);
+					glVertex3f(1.0f, 0.0f, 1.0f);
+					glVertex3f(1.0f, 0.0f, 0.0f);
+				glEnd();
+			}
+		}
+	glPopMatrix();
+
+	// Draw frame of reference for origin
+	// X direction
+	glPushMatrix();
+		// Move slightly above so it draws above grid lines
+		glTranslatef(0.0, 0.05, 0.0);
+		// Set line width to 5
+		glLineWidth(5);
+
+		// Draw the X direction
+		glBegin(GL_LINES);
+			glColor3f(1.0f, 0.0f, 0.0f);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+			glVertex3f(2.0f, 0.0f, 0.0f);
+		glEnd();
+
+		// Y direction
+		glBegin(GL_LINES);
+			glColor3f(0.0f, 1.0f, 0.0f);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+			glVertex3f(0.0f, 2.0f, 0.0f);
+		glEnd();
+
+		// Z direction
+		glBegin(GL_LINES);
+			glColor3f(0.0f, 0.0f, 1.0f);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+			glVertex3f(0.0f, 0.0f, 2.0f);
+		glEnd();
+
+		// Draw circle in middle
+		glColor3f(1.0, 1.0, 1.0);
+		glutSolidSphere(0.2, 20, 20);
+	glPopMatrix();
 
 	// Swap the drawing buffers here
 	glutSwapBuffers();

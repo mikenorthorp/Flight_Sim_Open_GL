@@ -48,11 +48,17 @@ GLfloat cameraPosition[] = {6, 2.5, 6, 0, 0, 0};
 GLfloat windowWidth  = 640.0;
 GLfloat windowHeight = 640.0;
 
+// Set up quad objects
+GLUquadricObj* quadricCylinder;
+GLUquadricObj* quadricDisk;
+
 // Key booleans
 // Not full screen by default
 GLint isFullScreen = 0;
 // Wire rendering on by default
 GLint isWireRendering = 1;
+// Sea ad sky enabled
+GLint isSeaAndSky = 0;
 
 // This handles full screen or getting out of full screen
 void fullScreen() {
@@ -73,6 +79,45 @@ void setUpPlane() {
 void drawPlane() {
 
 }
+
+// Draw the sky and sea with gluQuad objects
+void drawSkyAndSea() {
+	// Set up disk and cylinder
+	quadricCylinder = gluNewQuadric();
+	quadricDisk = gluNewQuadric();
+
+	// Set up draw style to line
+	if(isWireRendering) {
+		gluQuadricDrawStyle(quadricCylinder, GLU_LINE); 
+		gluQuadricDrawStyle(quadricDisk, GLU_LINE); 
+	} else {
+		gluQuadricDrawStyle(quadricCylinder, GLU_FILL); 
+		gluQuadricDrawStyle(quadricDisk, GLU_FILL); 
+	}
+
+
+	// Set up normals
+	glShadeModel(GL_SMOOTH);
+	gluQuadricNormals(quadricCylinder, GLU_SMOOTH);
+	gluQuadricDrawStyle(quadricDisk, GLU_SMOOTH); 
+
+	// Draw cylinder
+	glPushMatrix();
+		glLineWidth(1);
+		glTranslatef(0.0, -20.0, 0.0);
+		glRotatef(-90, 1.0f, 0.0f, 0.0f);
+		gluCylinder(quadricCylinder, 50, 50, 100, 100, 50);
+	glPopMatrix();
+
+	// Draw disk base
+	glPushMatrix();
+		glLineWidth(1);
+		glTranslatef(0.0, -20.0, 0.0);
+		glRotatef(-90, 1.0f, 0.0f, 0.0f);
+		gluDisk(quadricCylinder, 0, 51, 50, 50);
+	glPopMatrix();
+}
+
 
 // Enable the fog to be a slight orange
 void setUpFog() {
@@ -185,6 +230,10 @@ void normalKeys(unsigned char key, int x, int y) {
 			// Set full screen to opposite
 			isWireRendering = !isWireRendering;
 			break;
+		case 's':
+			// Set full screen to opposite
+			isSeaAndSky = !isSeaAndSky;
+			break;
 		// Quit the program gracefully
 		case 'q':
 			exit(0);
@@ -226,18 +275,10 @@ void specialKeysReleased(int key, int x, int y) {
 *************************************************************************/
 void printOutControls() {
 	printf("Scene Controls\n--------------\n");
-	printf("r: toggle orbit rings\n");
-	printf("s: toggle stars\n");
-	printf("c: toggle the sun's corona\n");
-	printf("k: toggle shields\n");
-	printf("b: toggle bonus klingon attack\n\n");
-	printf("Camera Controls\n---------------\n");
-	printf("Up    Arrow: move up\n");
-	printf("Down  Arrow: move down\n");
-	printf("Right Arrow: move right\n");
-	printf("Left  Arrow: move left\n");
-	printf("PAGE  UP   : forward\n");
-	printf("PAGE  DOWN : backward\n");
+	printf("w: Toggle between wireframe and solid draw mode\n");
+	printf("f: Toggle between fullscreen and non fullscreen\n");
+	printf("s: Toggle between sea and sky and frame reference grid\n");
+	printf("q: Quit the program\n");
 }
 
 
@@ -349,7 +390,15 @@ void display(void)
 	gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2], cameraPosition[3], cameraPosition[4], cameraPosition[5], 0, 1, 0);
 
 	// Draw the frame of reference and basic grid
-	drawFrameReferenceGrid();
+	if(isSeaAndSky) {
+		// Draw sky and sea and enable the fog
+		drawSkyAndSea();
+		setUpFog();
+	} else {
+		drawFrameReferenceGrid();
+		// Disable the fog
+		glDisable(GL_FOG);
+	}
 
 	// Swap the drawing buffers here
 	glutSwapBuffers();

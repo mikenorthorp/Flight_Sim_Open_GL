@@ -1,14 +1,16 @@
-﻿Build started 31/03/2014 5:31:54 PM.
+﻿Build started 31/03/2014 6:14:09 PM.
      1>Project "C:\Users\Mike\Documents\Visual Studio 2012\Projects\FlightSim\FlightSim\FlightSim.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"C:\Users\Mike\Documents\glew-1.10.0\include" /IC:\Users\Mike\Documents\freeglut\include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TC /analyze- /errorReport:prompt FlightSim.c
          FlightSim.c
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(111): warning C4305: 'function' : truncation from 'double' to 'GLfloat'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(232): warning C4244: 'function' : conversion from 'GLfloat' to 'int', possible loss of data
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(284): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(286): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(289): warning C4244: 'function' : conversion from 'GLfloat' to 'GLsizei', possible loss of data
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(349): warning C4244: 'function' : conversion from 'GLfloat' to 'int', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(80): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(88): warning C4305: 'function' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(135): warning C4305: 'function' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(256): warning C4244: 'function' : conversion from 'GLfloat' to 'int', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(311): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(313): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(316): warning C4244: 'function' : conversion from 'GLfloat' to 'GLsizei', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(376): warning C4244: 'function' : conversion from 'GLfloat' to 'int', possible loss of data
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Mike\Documents\Visual Studio 2012\Projects\FlightSim\Debug\FlightSim.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Users\Mike\Documents\glew-1.10.0\lib" /LIBPATH:C:\Users\Mike\Documents\freeglut\lib freeglut.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Mike\Documents\Visual Studio 2012\Projects\FlightSim\Debug\FlightSim.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Mike\Documents\Visual Studio 2012\Projects\FlightSim\Debug\FlightSim.lib" /MACHINE:X86 Debug\FlightSim.obj
          FlightSim.vcxproj -> C:\Users\Mike\Documents\Visual Studio 2012\Projects\FlightSim\Debug\FlightSim.exe
@@ -16,4 +18,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.83
+Time Elapsed 00:00:00.79

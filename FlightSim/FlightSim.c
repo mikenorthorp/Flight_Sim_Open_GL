@@ -42,7 +42,7 @@ typedef GLfloat color3[3];
 /* Position variables for camera and ship */
 
 // Keep track of current camera position and set the default
-GLfloat cameraPosition[] = {4, 3, 4, 0, 0, 0};
+GLfloat cameraPosition[] = {6, 2.5, 6, 0, 0, 0};
 
 // Window size parameters
 GLfloat windowWidth  = 640.0;
@@ -62,6 +62,30 @@ void fullScreen() {
 		glutReshapeWindow(640, 640);
 		glutPositionWindow(0, 0);
 	}
+}
+
+// Sets up the plane 
+void setUpPlane() {
+
+}
+
+// Draws the plane
+void drawPlane() {
+
+}
+
+// Enable the fog to be a slight orange
+void setUpFog() {
+	// define the color of the fog, orange
+	GLfloat fogColor[4] = {0.737255, 0.560784, 0.560784, 1.0};
+	// Enable the fog
+	glEnable(GL_FOG);
+	// set the color of the fog
+	glFogfv(GL_FOG_COLOR, fogColor);
+	// Set the fog mode to exponential
+	glFogf(GL_FOG_MODE, GL_EXP);
+	// Set the fog density
+	glFogf(GL_FOG_DENSITY, 0.05);
 }
 
 // Draw the grid and basic frame of reference
@@ -249,6 +273,9 @@ void init(void)
 
     // change into model-view mode so that we can change the object positions
 	glMatrixMode(GL_MODELVIEW);
+
+	// Draw the fog
+	setUpFog();
 
 	// Print out the controls
 	printOutControls();

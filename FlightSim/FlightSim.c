@@ -45,7 +45,7 @@ typedef GLfloat color4[4];
 GLfloat cameraPosition[] = {6, 2, 6, 0, 0, 0};
 
 // Set light position
-GLfloat lightPosition[] = {0.0, 2.0, 0.0, 1.0};
+GLfloat lightPosition[] = {0.0, 60.0, 0.0, 1.0};
 
 // Set default plane position
 GLfloat planePosition[] = {3.0, 0.5, 3.0};
@@ -267,33 +267,43 @@ void setUpPlane() {
 							if(objectCount <= 3) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
 								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
+								glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 							} else if(objectCount <= 5) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
+								glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 							} else if(objectCount <= 6) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, lightPurple);
 								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
+								glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 							} else if(objectCount <= 7) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
 								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
+								glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 							} else if(objectCount <= 10) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
 								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
+								glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 							} else if(objectCount <= 11) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
+								glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 							} else if(objectCount <= 13) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
 								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
+								glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 							} else if(objectCount <= 25) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
 								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
+								glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 							} else if(objectCount <= 32) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
 								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
+								glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 							} else {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
 								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
+								glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 							}
 							// Get normal and draw color
 							glNormal3f(planeNormals[atoi(token)-1][0], planeNormals[atoi(token)-1][1], planeNormals[atoi(token)-1][2]);
@@ -357,8 +367,8 @@ void drawSkyAndSea() {
 		glLineWidth(1);
 		glTranslatef(-30.0, -20.0, -30.0);
 		glRotatef(-90, 1.0f, 0.0f, 0.0f);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, orange);
-		glMaterialfv(GL_FRONT, GL_AMBIENT, orange);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, orange);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, grey);
 		gluCylinder(quadricCylinder, 100, 100, 100, 100, 50);
 	glPopMatrix();
 
@@ -367,8 +377,8 @@ void drawSkyAndSea() {
 		glLineWidth(1);
 		glTranslatef(-30.0, -20.0, -30.0);
 		glRotatef(-90, 1.0f, 0.0f, 0.0f);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, seaBlue);
-		glMaterialfv(GL_FRONT, GL_AMBIENT, seaBlue);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, seaBlue);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, grey);
 		gluDisk(quadricCylinder, 0, 101, 50, 50);
 	glPopMatrix();
 }
@@ -617,6 +627,9 @@ void init(void)
 
 	// Global ambient
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
+
+	// Shade both sides
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
     // change into model-view mode so that we can change the object positions
 	glMatrixMode(GL_MODELVIEW);

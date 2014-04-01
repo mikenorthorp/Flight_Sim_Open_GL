@@ -42,10 +42,13 @@ typedef GLfloat color4[4];
 /* Position variables for camera and ship */
 
 // Keep track of current camera position and set the default
-GLfloat cameraPosition[] = {6, 2.5, 6, 0, 0, 0};
+GLfloat cameraPosition[] = {6, 3, 6, 0, 0, 0};
 
 // Set light position
 GLfloat lightPosition[] = {0.0, 2.0, 0.0, 1.0};
+
+// Set default plane position
+GLfloat planePosition[] = {3.0, 0.5, 3.0};
 
 // Window size parameters
 GLfloat windowWidth  = 640.0;
@@ -79,6 +82,9 @@ color4 blue = {0.0, 0.0, 1.0, 1.0};
 color4 red = {1.0, 0.0, 0.0, 1.0};
 color4 green = {0.0, 1.0, 0.0, 1.0};
 color4 white = {1.0, 1.0, 1.0, 1.0};
+color4 grey = {0.05, 0.05, 0.05, 1.0};
+color4 seaBlue = {0.0, 0.3, 0.8, 1.0};
+color4 orange = {1.0, 0.5, 0.0, 1.0};
 
 
 // This handles full screen or getting out of full screen
@@ -136,38 +142,41 @@ void setUpPlane() {
 							// Draw the normal and point
 							if(objectCount <= 3) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
-								glMaterialfv(GL_FRONT, GL_AMBIENT, yellow);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
 							} else if(objectCount <= 5) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
-								glMaterialfv(GL_FRONT, GL_AMBIENT, black);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
 							} else if(objectCount <= 6) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, lightPurple);
-								glMaterialfv(GL_FRONT, GL_AMBIENT, lightPurple);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
 							} else if(objectCount <= 7) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
-								glMaterialfv(GL_FRONT, GL_AMBIENT, blue);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
 							} else if(objectCount <= 10) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
-								glMaterialfv(GL_FRONT, GL_AMBIENT, yellow);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
 							} else if(objectCount <= 11) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
-								glMaterialfv(GL_FRONT, GL_AMBIENT, black);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
 							} else if(objectCount <= 13) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
-								glMaterialfv(GL_FRONT, GL_AMBIENT, yellow);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
 							} else if(objectCount <= 25) {
-								glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
-								glMaterialfv(GL_FRONT, GL_AMBIENT, black);
+								glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
 							} else if(objectCount <= 32) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
-								glMaterialfv(GL_FRONT, GL_AMBIENT, yellow);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
 							} else {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
-								glMaterialfv(GL_FRONT, GL_AMBIENT, black);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
 							}
 							// Get normal and draw color
 							glNormal3f(planeNormals[atoi(token)-1][0], planeNormals[atoi(token)-1][1], planeNormals[atoi(token)-1][2]);
 							glVertex3f(planeVertices[atoi(token)-1][0], planeVertices[atoi(token)-1][1], planeVertices[atoi(token)-1][2]);
+							if(token == NULL) {
+								printf("test");
+							}
 							// Get next token
 							token = strtok(NULL, " ");
 						}
@@ -187,7 +196,9 @@ void setUpPlane() {
 // Draws the plane
 void drawPlane() {
 	glPushMatrix();
-		glTranslatef(0.0, 0.0, 0.0);
+		glTranslatef(planePosition[0], planePosition[1], planePosition[2]);
+		// Rotate the ship so it is facing away
+		glRotatef(-45, 0.0f, 1.0f, 0.0f);
 		glCallList(thePlane);
 	glPopMatrix();
 }
@@ -223,21 +234,21 @@ void drawSkyAndSea() {
 	// Draw cylinder
 	glPushMatrix();
 		glLineWidth(1);
-		glTranslatef(0.0, -20.0, 0.0);
+		glTranslatef(-30.0, -20.0, -30.0);
 		glRotatef(-90, 1.0f, 0.0f, 0.0f);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
-		glMaterialfv(GL_FRONT, GL_AMBIENT, yellow);
-		gluCylinder(quadricCylinder, 50, 50, 100, 100, 50);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, orange);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, orange);
+		gluCylinder(quadricCylinder, 100, 100, 100, 100, 50);
 	glPopMatrix();
 
 	// Draw disk base
 	glPushMatrix();
 		glLineWidth(1);
-		glTranslatef(0.0, -20.0, 0.0);
+		glTranslatef(-30.0, -20.0, -30.0);
 		glRotatef(-90, 1.0f, 0.0f, 0.0f);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
-		glMaterialfv(GL_FRONT, GL_AMBIENT, blue);
-		gluDisk(quadricCylinder, 0, 51, 50, 50);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, seaBlue);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, seaBlue);
+		gluDisk(quadricCylinder, 0, 101, 50, 50);
 	glPopMatrix();
 }
 
@@ -346,8 +357,8 @@ void drawFrameReferenceGrid() {
 		glEnd();
 
 		// Draw circle in middle
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
-		glMaterialfv(GL_FRONT, GL_AMBIENT, white);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, grey);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
 		glNormal3f(0.0f, 1.0f, 0.0f);
 		glutSolidSphere(0.2, 20, 20);
 	glPopMatrix();
@@ -444,7 +455,7 @@ void init(void)
 	GLfloat specular[] = {1.0, 1.0, 1.0, 1.0};
 
 	// Set global ambient
-	GLfloat globalAmbient[] = {0.0, 0.0, 0.0, 1.0};
+	GLfloat globalAmbient[] = {0.05, 0.05, 0.05, 1.0};
 
 	// Set initial window position and size
 	glutReshapeWindow(windowWidth, windowHeight);
@@ -489,7 +500,7 @@ void init(void)
 	glMatrixMode(GL_MODELVIEW);
 
 	// Draw the fog
-	setUpFog();
+	//setUpFog();
 
 	// Setup plane
 	setUpPlane();
@@ -572,7 +583,7 @@ void display(void)
 	if(isSeaAndSky) {
 		// Draw sky and sea and enable the fog
 		drawSkyAndSea();
-		setUpFog();
+		//setUpFog();
 	} else {
 		drawFrameReferenceGrid();
 		// Disable the fog

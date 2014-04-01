@@ -42,7 +42,7 @@ typedef GLfloat color4[4];
 /* Position variables for camera and ship */
 
 // Keep track of current camera position and set the default
-GLfloat cameraPosition[] = {6, 3, 6, 0, 0, 0};
+GLfloat cameraPosition[] = {6, 2, 6, 0, 0, 0};
 
 // Set light position
 GLfloat lightPosition[] = {0.0, 2.0, 0.0, 1.0};
@@ -101,7 +101,7 @@ void fullScreen() {
 void setUpPlane() {
 	int i = 0;
 	int j = 0;
-	int objectCount = 0;
+	int objectCount = -1;
 	int isFace = 0;
 	char firstChar;
 	char *token;
@@ -122,6 +122,7 @@ void setUpPlane() {
 		// Read each file line while it is not null, store in char array
 		while(fgets(string, 100, fileStream) != NULL)
 		{
+			firstChar = ' ';
 			// Store the plane vertices as it reads the file
 			if(sscanf(string, "v %f %f %f ", &planeVertices[i][0], &planeVertices[i][1], &planeVertices[i][2]) == 3) {
 				// Above stores vertices in the plane vertices array
@@ -134,12 +135,14 @@ void setUpPlane() {
 				if(firstChar == 'f') {
 					// Check for faces
 					token = strtok(string, " ");
+					// Get next token
 					token = strtok(NULL, " ");
 
 					// Draw polygon for this face
 					glBegin(GL_POLYGON);
 						while(token != NULL ) {
 							// Draw the normal and point
+							glMaterialf(GL_FRONT, GL_SHININESS, 100.0f);
 							if(objectCount <= 3) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
 								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
@@ -168,15 +171,12 @@ void setUpPlane() {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
 								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
 							} else {
-								glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+								glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
 								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
 							}
 							// Get normal and draw color
 							glNormal3f(planeNormals[atoi(token)-1][0], planeNormals[atoi(token)-1][1], planeNormals[atoi(token)-1][2]);
 							glVertex3f(planeVertices[atoi(token)-1][0], planeVertices[atoi(token)-1][1], planeVertices[atoi(token)-1][2]);
-							if(token == NULL) {
-								printf("test");
-							}
 							// Get next token
 							token = strtok(NULL, " ");
 						}

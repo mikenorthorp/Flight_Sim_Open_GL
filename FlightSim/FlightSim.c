@@ -151,6 +151,7 @@ void setUpProp() {
 
 					// Draw polygon for this face
 					glBegin(GL_POLYGON);
+						glLineWidth(1);
 						while(token != NULL ) {
 							// Draw the normal and point
 							glMaterialf(GL_FRONT, GL_SHININESS, 100.0f);
@@ -187,17 +188,31 @@ void setUpProp() {
 void drawProps() {
 	// Draw first propeller
 	glPushMatrix();
-		glTranslatef(planePosition[0], planePosition[1], planePosition[2]);
-		// Rotate the ship so it is facing away
+		// Position it in front of plane
+		glTranslatef(planePosition[0]-0.3, planePosition[1]-0.1, planePosition[2]+0.2);
+		// Rotate so it is facing away
 		glRotatef(-45, 0.0f, 1.0f, 0.0f);
+
+		// Rotate propeller
+		glRotatef(propInterp*360, 1.0f, 0.0f, 0.0f);
+		glTranslatef(0, 0.15f, -0.35f);
+
+		// Draw propeller
 		glCallList(theProp);
 	glPopMatrix();
 
 	// Draw second propeller
 	glPushMatrix();
-		glTranslatef(planePosition[0]+0.5, planePosition[1], planePosition[2]-0.5);
-		// Rotate the ship so it is facing away
+		// Position it in front of plane
+		glTranslatef(planePosition[0]+0.2, planePosition[1]-0.1, planePosition[2]-0.3);
+		// Rotate so it is facing away
 		glRotatef(-45, 0.0f, 1.0f, 0.0f);
+
+		// Rotate propeller
+		glRotatef(propInterp*360, 1.0f, 0.0f, 0.0f);
+		glTranslatef(0, 0.15f, -0.35f);
+
+		// Draw propeller
 		glCallList(theProp);
 	glPopMatrix();
 }
@@ -245,6 +260,7 @@ void setUpPlane() {
 
 					// Draw polygon for this face
 					glBegin(GL_POLYGON);
+						glLineWidth(1);
 						while(token != NULL ) {
 							// Draw the normal and point
 							glMaterialf(GL_FRONT, GL_SHININESS, 100.0f);
@@ -466,6 +482,7 @@ void drawFrameReferenceGrid() {
 		glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
 		glNormal3f(0.0f, 1.0f, 0.0f);
 		glutSolidSphere(0.2, 20, 20);
+		glLineWidth(1);
 	glPopMatrix();
 }
 
@@ -629,10 +646,11 @@ void init(void)
 *************************************************************************/
 void myIdle(void)
 {
+	// Rotation speed of the plane
 	if(propInterp >= 1.0) {
 		propInterp = 0;
 	} else {
-		propInterp += 0.01;
+		propInterp += 0.05;
 	}
 
 	// Force a redraw in OpenGL

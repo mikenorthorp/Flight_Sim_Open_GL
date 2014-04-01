@@ -61,10 +61,21 @@ GLUquadricObj* quadricDisk;
 // Set up display list for the plane
 GLuint thePlane = 0;
 
+// Set up display list for propeller
+GLuint theProp = 0;
+
 // This is an array of all the vertices for the plane
 point3 planeVertices[6763];
 // This is an array of all normals for the plane
 point3 planeNormals[6763];
+
+// This is an array of all the vertices for the plane
+point3 propVertices[6763];
+// This is an array of all normals for the plane
+point3 propNormals[6763];
+
+// Interp
+GLfloat propInterp = 0.0f;
 
 // Key booleans
 // Not full screen by default
@@ -95,6 +106,100 @@ void fullScreen() {
 		glutReshapeWindow(640, 640);
 		glutPositionWindow(0, 0);
 	}
+}
+
+// Sets up the propeller by reading it in
+void setUpProp() {
+	int i = 0;
+	int j = 0;
+	int objectCount = -1;
+	int isFace = 0;
+	char firstChar;
+	char *token;
+
+	// Set up a file
+	FILE * fileStream;
+	// Char array to store
+	char string[100];
+	fileStream = fopen("prop.txt", "rt");
+
+	// Make sure the file stream is not null
+	if (fileStream != NULL)
+	{
+		// Puts the ship in a display list
+		theProp = glGenLists(1);
+	  	glNewList(theProp, GL_COMPILE);
+
+		// Read each file line while it is not null, store in char array
+		while(fgets(string, 100, fileStream) != NULL)
+		{
+			firstChar = ' ';
+			// Store the plane vertices as it reads the file
+			if(sscanf(string, "v %f %f %f ", &propVertices[i][0], &propVertices[i][1], &propVertices[i][2]) == 3) {
+				// Above stores vertices in the plane vertices array
+				// Increase i for reading in vertices
+				i++;
+			} else if(sscanf(string, "n %f %f %f ", &propNormals[j][0], &propNormals[j][1], &propNormals[j][2]) == 3) {
+				// Above stores  the normals in the planenormals array
+				j++;
+			} else if(sscanf(string, "%c", &firstChar) == 1) { // Check if it is a face and tokenize it
+				if(firstChar == 'f') {
+					// Check for faces
+					token = strtok(string, " ");
+					// Get next token
+					token = strtok(NULL, " ");
+
+					// Draw polygon for this face
+					glBegin(GL_POLYGON);
+						while(token != NULL ) {
+							// Draw the normal and point
+							glMaterialf(GL_FRONT, GL_SHININESS, 100.0f);
+							if(objectCount <= 0) {
+								glMaterialfv(GL_FRONT, GL_DIFFUSE, orange);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, orange);
+							} else if(objectCount <= 1) {
+								glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, red);
+							} else {
+								glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, yellow);
+							}
+							// Get normal and draw color
+							glNormal3f(propNormals[atoi(token)-1][0], propNormals[atoi(token)-1][1], propNormals[atoi(token)-1][2]);
+							glVertex3f(propVertices[atoi(token)-1][0], propVertices[atoi(token)-1][1], propVertices[atoi(token)-1][2]);
+							// Get next token
+							token = strtok(NULL, " ");
+						}
+					glEnd(); // End drawing of polygon
+				} else if (firstChar == 'g') {
+					// Increase object count
+					objectCount++;
+				}
+			}
+		}
+		// End the display list
+		glEndList();
+	}
+	fclose (fileStream);
+}
+
+// Draws the propellers
+void drawProps() {
+	// Draw first propeller
+	glPushMatrix();
+		glTranslatef(planePosition[0], planePosition[1], planePosition[2]);
+		// Rotate the ship so it is facing away
+		glRotatef(-45, 0.0f, 1.0f, 0.0f);
+		glCallList(theProp);
+	glPopMatrix();
+
+	// Draw second propeller
+	glPushMatrix();
+		glTranslatef(planePosition[0]+0.5, planePosition[1], planePosition[2]-0.5);
+		// Rotate the ship so it is facing away
+		glRotatef(-45, 0.0f, 1.0f, 0.0f);
+		glCallList(theProp);
+	glPopMatrix();
 }
 
 // Sets up the plane by reading it in
@@ -505,6 +610,9 @@ void init(void)
 	// Setup plane
 	setUpPlane();
 
+	// Setup propeller
+	setUpProp();
+
 	// Print out the controls
 	printOutControls();
 }
@@ -521,6 +629,12 @@ void init(void)
 *************************************************************************/
 void myIdle(void)
 {
+	if(propInterp >= 1.0) {
+		propInterp = 0;
+	} else {
+		propInterp += 0.01;
+	}
+
 	// Force a redraw in OpenGL
 	glutPostRedisplay();
 }
@@ -591,6 +705,9 @@ void display(void)
 	}
 
 	drawPlane();
+
+	// Draw propellers
+	drawProps();
 
 	// Swap the drawing buffers here
 	glutSwapBuffers();

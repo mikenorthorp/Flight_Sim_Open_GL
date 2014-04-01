@@ -44,6 +44,9 @@ typedef GLfloat color3[3];
 // Keep track of current camera position and set the default
 GLfloat cameraPosition[] = {6, 2.5, 6, 0, 0, 0};
 
+// Set light position
+GLfloat lightPosition[] = {0.0, 2.0, 0.0, 1.0};
+
 // Window size parameters
 GLfloat windowWidth  = 640.0;
 GLfloat windowHeight = 640.0;
@@ -52,6 +55,14 @@ GLfloat windowHeight = 640.0;
 GLUquadricObj* quadricCylinder;
 GLUquadricObj* quadricDisk;
 
+// Set up display list for the plane
+GLuint thePlane = 0;
+
+// This is an array of all the vertices for the plane
+point3 planeVertices[6763];
+// This is an array of all normals for the plane
+point3 planeNormals[6763];
+
 // Key booleans
 // Not full screen by default
 GLint isFullScreen = 0;
@@ -59,6 +70,13 @@ GLint isFullScreen = 0;
 GLint isWireRendering = 1;
 // Sea ad sky enabled
 GLint isSeaAndSky = 0;
+
+// Define colors for plane and propeller
+color3 yellow = {1.0, 1.0, 0.0};
+color3 black = {0.0, 0.0, 0.0};
+color3 lightPurple = {0.87, 0.58, 0.98};
+color3 blue = {0.0, 0.0, 1.0};
+
 
 // This handles full screen or getting out of full screen
 void fullScreen() {
@@ -70,14 +88,73 @@ void fullScreen() {
 	}
 }
 
-// Sets up the plane 
+// Sets up the plane by reading it in
 void setUpPlane() {
+	int i = 0;
+	int j = 0;
+	int objectCount = 0;
+	int isFace = 0;
+	char firstChar;
+	char *token;
 
+	// Set up a file
+	FILE * fileStream;
+	// Char array to store
+	char string[100];
+	fileStream = fopen("plane.txt", "rt");
+
+	// Make sure the file stream is not null
+	if (fileStream != NULL)
+	{
+		// Puts the ship in a display list
+		thePlane = glGenLists(1);
+	  	glNewList(thePlane, GL_COMPILE);
+
+		// Read each file line while it is not null, store in char array
+		while(fgets(string, 100, fileStream) != NULL)
+		{
+			// Store the plane vertices as it reads the file
+			if(sscanf(string, "v %f %f %f ", &planeVertices[i][0], &planeVertices[i][1], &planeVertices[i][2]) == 3) {
+				// Above stores vertices in the plane vertices array
+				// Increase i for reading in vertices
+				i++;
+			} else if(sscanf(string, "n %f %f %f ", &planeNormals[j][0], &planeNormals[j][1], &planeNormals[j][2]) == 3) {
+				// Above stores  the normals in the planenormals array
+				j++;
+			} else if(sscanf(string, "%c", &firstChar) == 1) { // Check if it is a face and tokenize it
+				if(firstChar == 'f') {
+					// Check for faces
+					token = strtok(string, " ");
+					token = strtok(NULL, " ");
+				
+					// Draw polygon for this face
+					glBegin(GL_POLYGON);
+						while(token != NULL ) {
+							// Draw the normal and point
+							glNormal3f(planeNormals[atoi(token)-1][0], planeNormals[atoi(token)-1][1], planeNormals[atoi(token)-1][2]);
+							glVertex3f(planeVertices[atoi(token)-1][0], planeVertices[atoi(token)-1][1], planeVertices[atoi(token)-1][2]);
+							// Get next token
+							token = strtok(NULL, " ");
+						}
+					glEnd(); // End drawing of polygon
+				} else if (firstChar == 'g') {
+					// Increase object count
+					objectCount++;
+				}
+			}
+		}
+		// End the display list
+		glEndList();
+	}
+	fclose (fileStream);
 }
 
 // Draws the plane
 void drawPlane() {
-
+	glPushMatrix();
+		glTranslatef(0.0, 0.0, 0.0);
+		glCallList(thePlane);
+	glPopMatrix();
 }
 
 // Draw the sky and sea with gluQuad objects
@@ -88,18 +165,25 @@ void drawSkyAndSea() {
 
 	// Set up draw style to line
 	if(isWireRendering) {
-		gluQuadricDrawStyle(quadricCylinder, GLU_LINE); 
-		gluQuadricDrawStyle(quadricDisk, GLU_LINE); 
+		gluQuadricDrawStyle(quadricCylinder, GLU_LINE);
+		gluQuadricDrawStyle(quadricDisk, GLU_LINE);
 	} else {
-		gluQuadricDrawStyle(quadricCylinder, GLU_FILL); 
-		gluQuadricDrawStyle(quadricDisk, GLU_FILL); 
+		gluQuadricDrawStyle(quadricCylinder, GLU_FILL);
+		gluQuadricDrawStyle(quadricDisk, GLU_FILL);
+	}
+
+	// Enable or disable wirerendering based on button press
+	if(isWireRendering) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	} else {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
 
 	// Set up normals
 	glShadeModel(GL_SMOOTH);
 	gluQuadricNormals(quadricCylinder, GLU_SMOOTH);
-	gluQuadricDrawStyle(quadricDisk, GLU_SMOOTH); 
+	gluQuadricDrawStyle(quadricDisk, GLU_SMOOTH);
 
 	// Draw cylinder
 	glPushMatrix();
@@ -163,10 +247,16 @@ void drawFrameReferenceGrid() {
 				// Draw the grid
 				glBegin(GL_QUADS);
 					// Loop through to draw each square
-					glColor3f(0.8f, 0.8f, 1.0f);
+					glNormal3f(0.0f, 0.0f, 0.0f);
 					glVertex3f(0.0f, 0.0f, 0.0f);
+
+					glNormal3f(0.0f, 0.0f, 1.0f);
 					glVertex3f(0.0f, 0.0f, 1.0f);
+
+					glNormal3f(1.0f, 0.0f, 1.0f);
 					glVertex3f(1.0f, 0.0f, 1.0f);
+
+					glNormal3f(1.0f, 0.0f, 0.0f);
 					glVertex3f(1.0f, 0.0f, 0.0f);
 				glEnd();
 			}
@@ -183,27 +273,33 @@ void drawFrameReferenceGrid() {
 
 		// Draw the X direction
 		glBegin(GL_LINES);
-			glColor3f(1.0f, 0.0f, 0.0f);
+			glNormal3f(0.0f, 0.0f, 0.0f);
 			glVertex3f(0.0f, 0.0f, 0.0f);
+
+			glNormal3f(2.0f, 0.0f, 0.0f);
 			glVertex3f(2.0f, 0.0f, 0.0f);
 		glEnd();
 
 		// Y direction
 		glBegin(GL_LINES);
-			glColor3f(0.0f, 1.0f, 0.0f);
+			glNormal3f(0.0f, 0.0f, 0.0f);
 			glVertex3f(0.0f, 0.0f, 0.0f);
+
+			glNormal3f(0.0f, 2.0f, 0.0f);
 			glVertex3f(0.0f, 2.0f, 0.0f);
 		glEnd();
 
 		// Z direction
 		glBegin(GL_LINES);
-			glColor3f(0.0f, 0.0f, 1.0f);
+			glNormal3f(0.0f, 0.0f, 0.0f);
 			glVertex3f(0.0f, 0.0f, 0.0f);
+
+			glNormal3f(0.0f, 0.0f, 2.0f);
 			glVertex3f(0.0f, 0.0f, 2.0f);
 		glEnd();
 
 		// Draw circle in middle
-		glColor3f(1.0, 1.0, 1.0);
+		glNormal3f(0.0f, 1.0f, 0.0f);
 		glutSolidSphere(0.2, 20, 20);
 	glPopMatrix();
 }
@@ -252,7 +348,7 @@ void normalKeys(unsigned char key, int x, int y) {
 
 *************************************************************************/
 void specialKeys(int key, int x, int y) {
-	
+
 }
 
 /************************************************************************
@@ -263,7 +359,7 @@ void specialKeys(int key, int x, int y) {
 
 *************************************************************************/
 void specialKeysReleased(int key, int x, int y) {
-	
+
 }
 
 /************************************************************************
@@ -293,6 +389,11 @@ void printOutControls() {
 *************************************************************************/
 void init(void)
 {
+	// Set up light colors
+	GLfloat diffuse[] = {1.0, 1.0, 1.0, 1.0};
+	GLfloat ambient[] = {1.0, 1.0, 1.0, 1.0};
+	GLfloat specular[] = {1.0, 1.0, 1.0, 1.0};
+
 	// Set initial window position and size
 	glutReshapeWindow(windowWidth, windowHeight);
 	glutPositionWindow(0, 0);
@@ -312,11 +413,31 @@ void init(void)
     // gluPerspective(fovy, aspect, near, far)
     gluPerspective(90, windowWidth/windowHeight, 0.1, 40000);
 
+	// Enable lighting
+	glEnable(GL_LIGHTING);
+
+	// Enable light source
+	glEnable(GL_LIGHT0);
+
+	// Enable smooth shading
+	glShadeModel(GL_SMOOTH);
+
+	// Enable normalization
+	glEnable(GL_NORMALIZE);
+
+	// Set up light colors
+	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+
     // change into model-view mode so that we can change the object positions
 	glMatrixMode(GL_MODELVIEW);
 
 	// Draw the fog
 	setUpFog();
+
+	// Setup plane
+	setUpPlane();
 
 	// Print out the controls
 	printOutControls();
@@ -342,7 +463,7 @@ void myIdle(void)
 
 	Function:		myResize
 
-	Description:	Handles a user resize of the window. 
+	Description:	Handles a user resize of the window.
 
 *************************************************************************/
 void myResize(int newWidth, int newHeight)
@@ -363,7 +484,7 @@ void myResize(int newWidth, int newHeight)
     glLoadIdentity();
 
     // Modify the gluPerspective (fovy, aspect, near, far)
-    gluPerspective(45, windowWidth/windowHeight, 0.1, 40000); 
+    gluPerspective(45, windowWidth/windowHeight, 0.1, 40000);
 
     // Back into modelview
 	glMatrixMode(GL_MODELVIEW);
@@ -389,6 +510,9 @@ void display(void)
 	// Set up the camera position
 	gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2], cameraPosition[3], cameraPosition[4], cameraPosition[5], 0, 1, 0);
 
+	// Set light position
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+
 	// Draw the frame of reference and basic grid
 	if(isSeaAndSky) {
 		// Draw sky and sea and enable the fog
@@ -399,6 +523,8 @@ void display(void)
 		// Disable the fog
 		glDisable(GL_FOG);
 	}
+
+	drawPlane();
 
 	// Swap the drawing buffers here
 	glutSwapBuffers();
@@ -438,7 +564,7 @@ void main(int argc, char** argv)
 	// register redraw function
 	glutDisplayFunc(display);
 	// Register the resize function
-	glutReshapeFunc(myResize); 
+	glutReshapeFunc(myResize);
 	// go into a perpetual loop
 	glutMainLoop();
 }

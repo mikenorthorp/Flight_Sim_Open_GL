@@ -37,7 +37,7 @@
 // Defines an x,y,z point
 typedef GLfloat point3[3];
 // Defines a RGB color
-typedef GLfloat color3[3];
+typedef GLfloat color4[4];
 
 /* Position variables for camera and ship */
 
@@ -72,10 +72,13 @@ GLint isWireRendering = 1;
 GLint isSeaAndSky = 0;
 
 // Define colors for plane and propeller
-color3 yellow = {1.0, 1.0, 0.0};
-color3 black = {0.0, 0.0, 0.0};
-color3 lightPurple = {0.87, 0.58, 0.98};
-color3 blue = {0.0, 0.0, 1.0};
+color4 yellow = {1.0, 1.0, 0.0, 1.0};
+color4 black = {0.0, 0.0, 0.0, 1.0};
+color4 lightPurple = {0.87, 0.58, 0.98, 1.0};
+color4 blue = {0.0, 0.0, 1.0, 1.0};
+color4 red = {1.0, 0.0, 0.0, 1.0};
+color4 green = {0.0, 1.0, 0.0, 1.0};
+color4 white = {1.0, 1.0, 1.0, 1.0};
 
 
 // This handles full screen or getting out of full screen
@@ -126,11 +129,43 @@ void setUpPlane() {
 					// Check for faces
 					token = strtok(string, " ");
 					token = strtok(NULL, " ");
-				
+
 					// Draw polygon for this face
 					glBegin(GL_POLYGON);
 						while(token != NULL ) {
 							// Draw the normal and point
+							if(objectCount <= 3) {
+								glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, yellow);
+							} else if(objectCount <= 5) {
+								glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, black);
+							} else if(objectCount <= 6) {
+								glMaterialfv(GL_FRONT, GL_DIFFUSE, lightPurple);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, lightPurple);
+							} else if(objectCount <= 7) {
+								glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, blue);
+							} else if(objectCount <= 10) {
+								glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, yellow);
+							} else if(objectCount <= 11) {
+								glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, black);
+							} else if(objectCount <= 13) {
+								glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, yellow);
+							} else if(objectCount <= 25) {
+								glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, black);
+							} else if(objectCount <= 32) {
+								glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, yellow);
+							} else {
+								glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+								glMaterialfv(GL_FRONT, GL_AMBIENT, black);
+							}
+							// Get normal and draw color
 							glNormal3f(planeNormals[atoi(token)-1][0], planeNormals[atoi(token)-1][1], planeNormals[atoi(token)-1][2]);
 							glVertex3f(planeVertices[atoi(token)-1][0], planeVertices[atoi(token)-1][1], planeVertices[atoi(token)-1][2]);
 							// Get next token
@@ -190,6 +225,8 @@ void drawSkyAndSea() {
 		glLineWidth(1);
 		glTranslatef(0.0, -20.0, 0.0);
 		glRotatef(-90, 1.0f, 0.0f, 0.0f);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, yellow);
 		gluCylinder(quadricCylinder, 50, 50, 100, 100, 50);
 	glPopMatrix();
 
@@ -198,6 +235,8 @@ void drawSkyAndSea() {
 		glLineWidth(1);
 		glTranslatef(0.0, -20.0, 0.0);
 		glRotatef(-90, 1.0f, 0.0f, 0.0f);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, blue);
 		gluDisk(quadricCylinder, 0, 51, 50, 50);
 	glPopMatrix();
 }
@@ -247,6 +286,8 @@ void drawFrameReferenceGrid() {
 				// Draw the grid
 				glBegin(GL_QUADS);
 					// Loop through to draw each square
+					glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
+					glMaterialfv(GL_FRONT, GL_AMBIENT, white);
 					glNormal3f(0.0f, 0.0f, 0.0f);
 					glVertex3f(0.0f, 0.0f, 0.0f);
 
@@ -273,6 +314,8 @@ void drawFrameReferenceGrid() {
 
 		// Draw the X direction
 		glBegin(GL_LINES);
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
+			glMaterialfv(GL_FRONT, GL_AMBIENT, red);
 			glNormal3f(0.0f, 0.0f, 0.0f);
 			glVertex3f(0.0f, 0.0f, 0.0f);
 
@@ -282,6 +325,8 @@ void drawFrameReferenceGrid() {
 
 		// Y direction
 		glBegin(GL_LINES);
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, green);
+			glMaterialfv(GL_FRONT, GL_AMBIENT, green);
 			glNormal3f(0.0f, 0.0f, 0.0f);
 			glVertex3f(0.0f, 0.0f, 0.0f);
 
@@ -291,6 +336,8 @@ void drawFrameReferenceGrid() {
 
 		// Z direction
 		glBegin(GL_LINES);
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
+			glMaterialfv(GL_FRONT, GL_AMBIENT, blue);
 			glNormal3f(0.0f, 0.0f, 0.0f);
 			glVertex3f(0.0f, 0.0f, 0.0f);
 
@@ -299,6 +346,8 @@ void drawFrameReferenceGrid() {
 		glEnd();
 
 		// Draw circle in middle
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, white);
 		glNormal3f(0.0f, 1.0f, 0.0f);
 		glutSolidSphere(0.2, 20, 20);
 	glPopMatrix();
@@ -394,6 +443,9 @@ void init(void)
 	GLfloat ambient[] = {1.0, 1.0, 1.0, 1.0};
 	GLfloat specular[] = {1.0, 1.0, 1.0, 1.0};
 
+	// Set global ambient
+	GLfloat globalAmbient[] = {0.0, 0.0, 0.0, 1.0};
+
 	// Set initial window position and size
 	glutReshapeWindow(windowWidth, windowHeight);
 	glutPositionWindow(0, 0);
@@ -429,6 +481,9 @@ void init(void)
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+
+	// Global ambient
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
 
     // change into model-view mode so that we can change the object positions
 	glMatrixMode(GL_MODELVIEW);

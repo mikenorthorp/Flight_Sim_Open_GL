@@ -108,6 +108,20 @@ void fullScreen() {
 	}
 }
 
+// Enable the fog to be a slight orange
+void setUpFog() {
+	// define the color of the fog, pink
+	GLfloat fogColor[4] = {0.737255, 0.560784, 0.560784, 1.0};
+	// Enable the fog
+	glEnable(GL_FOG);
+	// set the color of the fog
+	glFogfv(GL_FOG_COLOR, fogColor);
+	// Set the fog mode to exponential
+	glFogf(GL_FOG_MODE, GL_EXP);
+	// Set the fog density
+	glFogf(GL_FOG_DENSITY, 0.005);
+}
+
 // Sets up the propeller by reading it in
 void setUpProp() {
 	int i = 0;
@@ -369,33 +383,27 @@ void drawSkyAndSea() {
 		glRotatef(-90, 1.0f, 0.0f, 0.0f);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, orange);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, grey);
-		gluCylinder(quadricCylinder, 100, 100, 100, 100, 50);
+		gluCylinder(quadricCylinder, 500, 500, 500, 250, 100);
 	glPopMatrix();
 
 	// Draw disk base
 	glPushMatrix();
+		// Setup fog for the sea only
+		setUpFog();
+
+		// Line width is 1
 		glLineWidth(1);
+
+		// Move it to correct position
 		glTranslatef(-30.0, -20.0, -30.0);
 		glRotatef(-90, 1.0f, 0.0f, 0.0f);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, seaBlue);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, grey);
-		gluDisk(quadricCylinder, 0, 101, 50, 50);
+		gluDisk(quadricCylinder, 0, 501, 100, 100);
 	glPopMatrix();
-}
 
-
-// Enable the fog to be a slight orange
-void setUpFog() {
-	// define the color of the fog, orange
-	GLfloat fogColor[4] = {0.737255, 0.560784, 0.560784, 1.0};
-	// Enable the fog
-	glEnable(GL_FOG);
-	// set the color of the fog
-	glFogfv(GL_FOG_COLOR, fogColor);
-	// Set the fog mode to exponential
-	glFogf(GL_FOG_MODE, GL_EXP);
-	// Set the fog density
-	glFogf(GL_FOG_DENSITY, 0.05);
+	// Disable the fog
+	glDisable(GL_FOG);
 }
 
 // Draw the grid and basic frame of reference
@@ -634,9 +642,6 @@ void init(void)
     // change into model-view mode so that we can change the object positions
 	glMatrixMode(GL_MODELVIEW);
 
-	// Draw the fog
-	//setUpFog();
-
 	// Setup plane
 	setUpPlane();
 
@@ -726,9 +731,8 @@ void display(void)
 
 	// Draw the frame of reference and basic grid
 	if(isSeaAndSky) {
-		// Draw sky and sea and enable the fog
+		// Draw sky and sea and enable the fog for sea
 		drawSkyAndSea();
-		//setUpFog();
 	} else {
 		drawFrameReferenceGrid();
 		// Disable the fog

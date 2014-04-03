@@ -42,13 +42,13 @@ typedef GLfloat color4[4];
 /* Position variables for camera and ship */
 
 // Keep track of current camera position and set the default
-GLfloat cameraPosition[] = {6, 2, 6, 0, 0, 0};
+GLfloat cameraPosition[] = {0, 2, 10, 0, 1.5, 4};
 
 // Set light position
 GLfloat lightPosition[] = {0.0, 60.0, 0.0, 1.0};
 
 // Set default plane position
-GLfloat planePosition[] = {3.0, 0.5, 3.0};
+GLfloat planePosition[] = {0, 0.5, 6.0};
 
 // Window size parameters
 GLfloat windowWidth  = 640.0;
@@ -97,6 +97,12 @@ color4 grey = {0.05, 0.05, 0.05, 1.0};
 color4 seaBlue = {0.0, 0.3, 0.8, 1.0};
 color4 orange = {1.0, 0.5, 0.0, 1.0};
 
+// Toggles for directions key pressed and not pressed
+int upPressed = 0;
+int downPressed = 0;
+int forwardPressed = 0;
+int backwardPressed = 0;
+
 
 // This handles full screen or getting out of full screen
 void fullScreen() {
@@ -106,6 +112,11 @@ void fullScreen() {
 		glutReshapeWindow(640, 640);
 		glutPositionWindow(0, 0);
 	}
+}
+
+// This handles plane movments on key presses or mouse changes
+void movePlane() {
+	
 }
 
 // Enable the fog to be a slight orange
@@ -203,9 +214,9 @@ void drawProps() {
 	// Draw first propeller
 	glPushMatrix();
 		// Position it in front of plane
-		glTranslatef(planePosition[0]-0.3, planePosition[1]-0.1, planePosition[2]+0.2);
+		glTranslatef(planePosition[0]-0.35, planePosition[1]-0.1, planePosition[2]-0.05);
 		// Rotate so it is facing away
-		glRotatef(-45, 0.0f, 1.0f, 0.0f);
+		glRotatef(-90, 0.0f, 1.0f, 0.0f);
 
 		// Rotate propeller
 		glRotatef(propInterp*360, 1.0f, 0.0f, 0.0f);
@@ -218,9 +229,9 @@ void drawProps() {
 	// Draw second propeller
 	glPushMatrix();
 		// Position it in front of plane
-		glTranslatef(planePosition[0]+0.2, planePosition[1]-0.1, planePosition[2]-0.3);
+		glTranslatef(planePosition[0]+0.35, planePosition[1]-0.1, planePosition[2]-0.05);
 		// Rotate so it is facing away
-		glRotatef(-45, 0.0f, 1.0f, 0.0f);
+		glRotatef(-90, 0.0f, 1.0f, 0.0f);
 
 		// Rotate propeller
 		glRotatef(propInterp*360, 1.0f, 0.0f, 0.0f);
@@ -277,7 +288,7 @@ void setUpPlane() {
 						glLineWidth(1);
 						while(token != NULL ) {
 							// Draw the normal and point
-							glMaterialf(GL_FRONT, GL_SHININESS, 100.0f);
+							glMaterialf(GL_FRONT, GL_SHININESS, 10.0f);
 							if(objectCount <= 3) {
 								glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
 								glMaterialfv(GL_FRONT, GL_AMBIENT, grey);
@@ -343,7 +354,7 @@ void drawPlane() {
 	glPushMatrix();
 		glTranslatef(planePosition[0], planePosition[1], planePosition[2]);
 		// Rotate the ship so it is facing away
-		glRotatef(-45, 0.0f, 1.0f, 0.0f);
+		glRotatef(-90, 0.0f, 1.0f, 0.0f);
 		glCallList(thePlane);
 	glPopMatrix();
 }
@@ -379,7 +390,6 @@ void drawSkyAndSea() {
 	// Draw cylinder
 	glPushMatrix();
 		glLineWidth(1);
-		glTranslatef(-30.0, -20.0, -30.0);
 		glRotatef(-90, 1.0f, 0.0f, 0.0f);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, orange);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, grey);
@@ -395,11 +405,10 @@ void drawSkyAndSea() {
 		glLineWidth(1);
 
 		// Move it to correct position
-		glTranslatef(-30.0, -20.0, -30.0);
 		glRotatef(-90, 1.0f, 0.0f, 0.0f);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, seaBlue);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, grey);
-		gluDisk(quadricCylinder, 0, 501, 100, 100);
+		gluDisk(quadricCylinder, 0, 501, 250, 300);
 	glPopMatrix();
 
 	// Disable the fog
@@ -414,7 +423,7 @@ void drawFrameReferenceGrid() {
 
 	// Call draw functions here
 	glPushMatrix();
-
+	glRotatef(45, 0.0, 1.0, 0.0);
 	// Set line width to 1
 	glLineWidth(1);
 
@@ -459,6 +468,9 @@ void drawFrameReferenceGrid() {
 	glPushMatrix();
 		// Move slightly above so it draws above grid lines
 		glTranslatef(0.0, 0.05, 0.0);
+
+		// Rotate at angle
+		glRotatef(-45, 0.0, 1.0, 0.0);
 		// Set line width to 5
 		glLineWidth(5);
 
@@ -548,7 +560,26 @@ void normalKeys(unsigned char key, int x, int y) {
 
 *************************************************************************/
 void specialKeys(int key, int x, int y) {
-
+		// Move up
+		if(key == GLUT_KEY_UP) {
+			// Set the key to be pressed
+			upPressed = 1;
+		}
+		// Move down
+		if(key == GLUT_KEY_DOWN) {
+			// Set the key to be pressed
+			downPressed = 1;
+		}
+		// Move forward
+		if(key == GLUT_KEY_PAGE_UP) {
+			// Set the key to be pressed
+			forwardPressed = 1;
+		}
+		// Move down
+		if(key == GLUT_KEY_PAGE_DOWN) {
+			// Set the key to be pressed
+			backwardPressed = 1;
+		}
 }
 
 /************************************************************************
@@ -559,7 +590,25 @@ void specialKeys(int key, int x, int y) {
 
 *************************************************************************/
 void specialKeysReleased(int key, int x, int y) {
-
+		if(key == GLUT_KEY_UP) {
+			// Set the key to be depressed
+			upPressed = 0;
+		}
+		// Move down
+		if(key == GLUT_KEY_DOWN) {
+			// Set the key to be depressed
+			downPressed = 0;
+		}
+		// Move forward
+		if(key == GLUT_KEY_PAGE_UP) {
+			// Set the key to be depressed
+			forwardPressed = 0;
+		}
+		// Move down
+		if(key == GLUT_KEY_PAGE_DOWN) {
+			// Set the key to be depressed
+			backwardPressed = 0;
+		}
 }
 
 /************************************************************************

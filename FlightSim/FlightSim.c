@@ -42,17 +42,16 @@ typedef GLfloat color4[4];
 /* Position variables for camera and ship */
 
 // Keep track of current camera position and set the default
-GLfloat cameraPosition[] = {0, 2, 10, 0, 1.5, 4};
+GLfloat cameraPosition[] = {0, 2, 10, 0, 1.5, 8};
 
 // Set light position
 GLfloat lightPosition[] = {0.0, 60.0, 0.0, 1.0};
 
 // Set default plane position
-GLfloat planePosition[] = {0, 0.5, 6.0};
-
+GLfloat planePosition[] = {0, 0.0, 6.0};
 
 // Set default world position
-GLfloat worldPosition[] = {0.0, 0.0, 0.0};
+GLfloat worldPosition[] = {0.0, -1.5, -10.0};
 
 // Window size parameters
 GLfloat windowWidth  = 640.0;
@@ -108,7 +107,7 @@ int forwardPressed = 0;
 int backwardPressed = 0;
 
 // Plane speed, this is the plane speed
-GLfloat planeSpeed = 0.1;
+GLfloat planeSpeed = 0.05;
 
 // Get the amount to tilt the plane
 GLfloat sideTilt = 0.0;
@@ -187,33 +186,12 @@ void mousePosition(int x, int y) {
 	
 }
 
-// This handles propeller movmenets when rotating
-void moveProp() {
-	// Check if we should rotate a certain way depending on where the plane is moving
-	if(downPressed) {
-		// Add tilt to prop
-		glRotatef(-8, 1.0f, 0.0f, 0.0f);
-	}
-
-	if(forwardPressed) {
-		// Add tilt to prop
-		glRotatef(-5, 1.0f, 0.0f, 0.0f);
-	}
-
-	if(backwardPressed) {
-		// Add tilt to prop
-		glRotatef(5, 1.0f, 0.0f, 0.0f);
-	}
-}
-
 // Draws the propellers
 void drawProps() {
 	// Draw first propeller
 	glPushMatrix();
 		// Position it in front of plane
-		glTranslatef(planePosition[0]-0.35, planePosition[1]-0.1, planePosition[2]-0.05);
-		// Rotate propellers if need be
-		moveProp();
+		glTranslatef(-0.35, -0.1, -0.05);
 		// Rotate so it is facing away
 		glRotatef(-90, 0.0f, 1.0f, 0.0f);
 		// Rotate propeller
@@ -227,9 +205,7 @@ void drawProps() {
 	// Draw second propeller
 	glPushMatrix();
 		// Position it in front of plane
-		glTranslatef(planePosition[0]+0.35, planePosition[1]-0.1, planePosition[2]-0.05);
-		// Rotate propellers if need be
-		moveProp();
+		glTranslatef(+0.35, -0.1, -0.05);
 		// Rotate so it is facing away
 		glRotatef(-90, 0.0f, 1.0f, 0.0f);
 		// Rotate propeller
@@ -249,7 +225,7 @@ void movePlane() {
 	// Check if we should rotate a certain way depending on where the plane is moving
 	if(upPressed) {
 		// Update camera position and plane position
-		worldPosition[1] -= 0.05;
+		planePosition[1] += 0.05;
 
 		// Add tilt to plane
 		glRotatef(8, 1.0f, 0.0f, 0.0f);
@@ -257,7 +233,7 @@ void movePlane() {
 
 	if(downPressed) {
 		// Update camera position and plane position
-		worldPosition[1] += 0.05;
+		planePosition[1] -= 0.05;
 
 		// Add tilt to plane
 		glRotatef(-8, 1.0f, 0.0f, 0.0f);
@@ -482,15 +458,55 @@ void setUpPlane() {
 
 // Draws the plane
 void drawPlane() {
-	// Always check for the planes tilt
-	glRotatef(sideTilt*-1, 0.0f, 0.0f, 1.0f);
-	// Draw propellers
-	drawProps();
+
 	// Draw plane
 	glPushMatrix();	
-		// Moves the plane and propellers
-		movePlane();
-		
+		// Move the plane to planes position
+		glTranslatef(planePosition[0], planePosition[1], planePosition[2]);
+
+		// Check if we should rotate a certain way depending on where the plane is moving
+		if(upPressed) {
+			// Update camera position and plane position
+			planePosition[1] += 0.05;
+
+			// Add tilt to plane
+			glRotatef(8, 1.0f, 0.0f, 0.0f);
+		}
+
+		if(downPressed) {
+			// Update camera position and plane position
+			planePosition[1] -= 0.05;
+
+			// Add tilt to plane
+			glRotatef(-8, 1.0f, 0.0f, 0.0f);
+		}
+
+		if(forwardPressed) {
+			// Make plane speed faster
+			planeSpeed += 0.005;
+
+			// Add tilt to plane
+			glRotatef(-5, 1.0f, 0.0f, 0.0f);
+		}
+
+		if(backwardPressed) {
+			// Make plane speed slower
+			// Limit how slow you can go
+			if(planeSpeed >= 0.05) {
+				planeSpeed -= 0.005;
+			}
+
+			// Add tilt to plane
+			glRotatef(5, 1.0f, 0.0f, 0.0f);
+		}
+
+		// Always check for the planes tilt
+		glRotatef(-turnAngle, 0.0f, 1.0f, 0.0f);
+		glRotatef(sideTilt*-1, 0.0f, 0.0f, 1.0f);
+
+		// Draw propellers
+		drawProps();
+
 		// Rotate the ship so it is facing away
 		glRotatef(-90, 0.0f, 1.0f, 0.0f);
 		glCallList(thePlane);
@@ -561,7 +577,6 @@ void drawFrameReferenceGrid() {
 
 	// Call draw functions here
 	glPushMatrix();
-	glRotatef(45, 0.0, 1.0, 0.0);
 	// Set line width to 1
 	glLineWidth(1);
 
@@ -607,8 +622,6 @@ void drawFrameReferenceGrid() {
 		// Move slightly above so it draws above grid lines
 		glTranslatef(0.0, 0.05, 0.0);
 
-		// Rotate at angle
-		glRotatef(-45, 0.0, 1.0, 0.0);
 		// Set line width to 5
 		glLineWidth(5);
 
@@ -854,9 +867,6 @@ void myIdle(void)
 	// Set the turnspeed to 0
 	GLfloat turnSpeed = 0.0;
 
-	// Increase plane position by speed
-	worldPosition[2] += planeSpeed;
-
 	// Rotation speed of the plane
 	if(propInterp >= 1.0) {
 		propInterp = 0;
@@ -865,7 +875,7 @@ void myIdle(void)
 	}
 
 	// Calculate the rotation speed of turning
-	turnSpeed += 5* ratioOfTilt;
+	turnSpeed += ratioOfTilt * 2;
 
 	// Increase the angle of turning by the turn speed
 	turnAngle += turnSpeed; 
@@ -927,17 +937,31 @@ void display(void)
 	// Load the indentity matrix
 	glLoadIdentity();
 
+	// Update plane position
+	planePosition[0] += sin(turnAngle * (PI/180.0f)) * planeSpeed;
+	planePosition[2] -= cos(turnAngle * (PI/180.0f)) * planeSpeed;
+
+
 	// Set up the camera position
+	cameraPosition[0] = planePosition[0] + sin(turnAngle * (PI/180.0f)) * -4;
+	cameraPosition[1] = 3 + planePosition[1];
+	cameraPosition[2] = planePosition[2] - cos(turnAngle * (PI/180.0f)) * -4;
+
+	cameraPosition[3] = planePosition[0];
+	cameraPosition[4] = planePosition[1];
+	cameraPosition[5] = planePosition[2];
+
 	gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2], cameraPosition[3], cameraPosition[4], cameraPosition[5], 0, 1, 0);
 
 	// Set light position
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 
+	// Draw everything except plane so we can move world around the plane
 	glPushMatrix();
-		// Translate the world around the plane
-		glTranslatef(worldPosition[0], worldPosition[1], worldPosition[2]);
-		// Rotate the world around the plane
-		glRotatef(turnAngle, 0.0f, 1.0f, 0.0f);
+		// Rotate move the world around the plane
+		//glTranslatef(worldPosition[0], worldPosition[1], worldPosition[2]);
+		//glRotatef(turnAngle, 0.0f, 1.0f, 0.0f);
+
 		// Draw the frame of reference and basic grid
 		if(isSeaAndSky) {
 			// Draw sky and sea and enable the fog for sea

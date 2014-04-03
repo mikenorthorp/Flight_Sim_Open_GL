@@ -9,119 +9,8 @@
 
 *************************************************************************************/
 
-/* include the library header files */
-// Freeglut header
-#include <GL\freeglut.h>
-#include <GL\Gl.h>
-#include <windows.h>
-// Math header
-#include <math.h>
-// File read in
-#include <stdio.h>
-// Time header for random seeds
-#include <time.h>
-
-/* Defines */
-// Ratio of the circumference to the diameter of a circle
-#define PI 3.14159265f
-// Conversion multiplier for converting from degrees to Radians for some calculations
-#define DEG_TO_RAD PI/180.0f
-
-// Grid size X by X
-#define GRID_SIZE 100.0f
-
-/* Global variables */
-
-/* Typedefs and structs */
-
-// Defines an x,y,z point
-typedef GLfloat point3[3];
-// Defines a RGB color
-typedef GLfloat color4[4];
-
-/* Position variables for camera and ship */
-
-// Keep track of current camera position and set the default
-GLfloat cameraPosition[] = {0, 2, 10, 0, 1.5, 8};
-
-// Set light position
-GLfloat lightPosition[] = {0.0, 60.0, 0.0, 1.0};
-
-// Set default plane position
-GLfloat planePosition[] = {0, 0.0, 6.0};
-
-// Set default world position
-GLfloat worldPosition[] = {0.0, -1.5, -10.0};
-
-// Window size parameters
-GLfloat windowWidth  = 640.0;
-GLfloat windowHeight = 640.0;
-
-// Set up quad objects
-GLUquadricObj* quadricCylinder;
-GLUquadricObj* quadricDisk;
-
-// Set up display list for the plane
-GLuint thePlane = 0;
-
-// Set up display list for propeller
-GLuint theProp = 0;
-
-// This is an array of all the vertices for the plane
-point3 planeVertices[6763];
-// This is an array of all normals for the plane
-point3 planeNormals[6763];
-
-// This is an array of all the vertices for the plane
-point3 propVertices[6763];
-// This is an array of all normals for the plane
-point3 propNormals[6763];
-
-// Interp
-GLfloat propInterp = 0.0f;
-
-// Key booleans
-// Not full screen by default
-GLint isFullScreen = 0;
-// Wire rendering on by default
-GLint isWireRendering = 1;
-// Sea ad sky enabled
-GLint isSeaAndSky = 0;
-
-// Define colors for plane and propeller
-color4 yellow = {1.0, 1.0, 0.0, 1.0};
-color4 black = {0.0, 0.0, 0.0, 1.0};
-color4 lightPurple = {0.87, 0.58, 0.98, 1.0};
-color4 blue = {0.0, 0.0, 1.0, 1.0};
-color4 red = {1.0, 0.0, 0.0, 1.0};
-color4 green = {0.0, 1.0, 0.0, 1.0};
-color4 white = {1.0, 1.0, 1.0, 1.0};
-color4 grey = {0.05, 0.05, 0.05, 1.0};
-color4 seaBlue = {0.0, 0.3, 0.8, 1.0};
-color4 orange = {1.0, 0.5, 0.0, 1.0};
-
-// Toggles for directions key pressed and not pressed
-int upPressed = 0;
-int downPressed = 0;
-int forwardPressed = 0;
-int backwardPressed = 0;
-
-// Plane speed, this is the plane speed
-GLfloat planeSpeed = 0.05;
-
-// Get the amount to tilt the plane
-GLfloat sideTilt = 0.0;
-
-// Global mouse position
-float mouseX = 0.0;
-float mouseY = 0.0;
-
-GLfloat ratioOfTilt = 0.0;
-
-// Maximum distance from center mouse can move (this is also middle of screen)
-GLfloat maxMouseMove = 0.0;
-
-GLfloat turnAngle = 0.0;
+// Include headerfile for header, function and variable set up
+#include "FlightSim.h"
 
 // This handles full screen or getting out of full screen
 void fullScreen() {
@@ -183,7 +72,7 @@ void mousePosition(int x, int y) {
 	} else {
 		sideTilt = 0;
 	}
-	
+
 }
 
 // Draws the propellers
@@ -460,7 +349,7 @@ void setUpPlane() {
 void drawPlane() {
 
 	// Draw plane
-	glPushMatrix();	
+	glPushMatrix();
 		// Move the plane to planes position
 		glTranslatef(planePosition[0], planePosition[1], planePosition[2]);
 
@@ -577,6 +466,7 @@ void drawFrameReferenceGrid() {
 
 	// Call draw functions here
 	glPushMatrix();
+	glRotatef(-45, 0.0f, 1.0f, 0.0f);
 	// Set line width to 1
 	glLineWidth(1);
 
@@ -619,6 +509,7 @@ void drawFrameReferenceGrid() {
 	// Draw frame of reference for origin
 	// X direction
 	glPushMatrix();
+		glRotatef(-45, 0.0f, 1.0f, 0.0f);
 		// Move slightly above so it draws above grid lines
 		glTranslatef(0.0, 0.05, 0.0);
 
@@ -878,7 +769,7 @@ void myIdle(void)
 	turnSpeed += ratioOfTilt * 2;
 
 	// Increase the angle of turning by the turn speed
-	turnAngle += turnSpeed; 
+	turnAngle += turnSpeed;
 
 	// Reset turn angle if goes over 360
 	if(turnAngle > 360) {
@@ -944,7 +835,7 @@ void display(void)
 
 	// Set up the camera position
 	cameraPosition[0] = planePosition[0] + sin(turnAngle * (PI/180.0f)) * -4;
-	cameraPosition[1] = 3 + planePosition[1];
+	cameraPosition[1] = 1.2 + planePosition[1];
 	cameraPosition[2] = planePosition[2] - cos(turnAngle * (PI/180.0f)) * -4;
 
 	cameraPosition[3] = planePosition[0];
@@ -958,10 +849,6 @@ void display(void)
 
 	// Draw everything except plane so we can move world around the plane
 	glPushMatrix();
-		// Rotate move the world around the plane
-		//glTranslatef(worldPosition[0], worldPosition[1], worldPosition[2]);
-		//glRotatef(turnAngle, 0.0f, 1.0f, 0.0f);
-
 		// Draw the frame of reference and basic grid
 		if(isSeaAndSky) {
 			// Draw sky and sea and enable the fog for sea

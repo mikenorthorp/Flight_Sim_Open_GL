@@ -103,6 +103,9 @@ int downPressed = 0;
 int forwardPressed = 0;
 int backwardPressed = 0;
 
+// Plane speed, this is the plane speed
+GLfloat planeSpeed = 0.1;
+
 
 // This handles full screen or getting out of full screen
 void fullScreen() {
@@ -116,7 +119,64 @@ void fullScreen() {
 
 // This handles plane movments on key presses or mouse changes
 void movePlane() {
-	
+	// Check if we should rotate a certain way depending on where the plane is moving
+	if(upPressed) {
+		// Update camera position and plane position
+		cameraPosition[1] += 0.05;
+		cameraPosition[4] += 0.05;
+		planePosition[1] += 0.05;
+
+		// Add tilt to plane
+		glRotatef(8, 1.0f, 0.0f, 0.0f);
+	}
+
+	if(downPressed) {
+		// Update camera position and plane position
+		cameraPosition[1] -= 0.05;
+		cameraPosition[4] -= 0.05;
+		planePosition[1] -= 0.05;
+
+		// Add tilt to plane
+		glRotatef(-8, 1.0f, 0.0f, 0.0f);
+	}
+
+	if(forwardPressed) {
+		// Make plane speed faster
+		planeSpeed += 0.005;
+
+		// Add tilt to plane
+		glRotatef(-5, 1.0f, 0.0f, 0.0f);
+	}
+
+	if(backwardPressed) {
+		// Make plane speed slower
+		// Limit how slow you can go
+		if(planeSpeed >= 0.05) {
+			planeSpeed -= 0.005;
+		}
+
+		// Add tilt to plane
+		glRotatef(5, 1.0f, 0.0f, 0.0f);
+	}
+}
+
+// This handles propeller movmenets when rotating
+void moveProp() {
+	// Check if we should rotate a certain way depending on where the plane is moving
+	if(downPressed) {
+		// Add tilt to prop
+		glRotatef(-8, 1.0f, 0.0f, 0.0f);
+	}
+
+	if(forwardPressed) {
+		// Add tilt to prop
+		glRotatef(-5, 1.0f, 0.0f, 0.0f);
+	}
+
+	if(backwardPressed) {
+		// Add tilt to prop
+		glRotatef(5, 1.0f, 0.0f, 0.0f);
+	}
 }
 
 // Enable the fog to be a slight orange
@@ -215,6 +275,8 @@ void drawProps() {
 	glPushMatrix();
 		// Position it in front of plane
 		glTranslatef(planePosition[0]-0.35, planePosition[1]-0.1, planePosition[2]-0.05);
+		// Rotate propellers if need be
+		moveProp();
 		// Rotate so it is facing away
 		glRotatef(-90, 0.0f, 1.0f, 0.0f);
 
@@ -230,6 +292,8 @@ void drawProps() {
 	glPushMatrix();
 		// Position it in front of plane
 		glTranslatef(planePosition[0]+0.35, planePosition[1]-0.1, planePosition[2]-0.05);
+		// Rotate propellers if need be
+		moveProp();
 		// Rotate so it is facing away
 		glRotatef(-90, 0.0f, 1.0f, 0.0f);
 
@@ -353,6 +417,8 @@ void setUpPlane() {
 void drawPlane() {
 	glPushMatrix();
 		glTranslatef(planePosition[0], planePosition[1], planePosition[2]);
+		// Moves the plane and propellers
+		movePlane();
 		// Rotate the ship so it is facing away
 		glRotatef(-90, 0.0f, 1.0f, 0.0f);
 		glCallList(thePlane);
@@ -713,6 +779,11 @@ void init(void)
 *************************************************************************/
 void myIdle(void)
 {
+	// Increase plane position by speed
+	cameraPosition[2] -= planeSpeed;
+	cameraPosition[5] -= planeSpeed;
+	planePosition[2] -= planeSpeed;
+
 	// Rotation speed of the plane
 	if(propInterp >= 1.0) {
 		propInterp = 0;

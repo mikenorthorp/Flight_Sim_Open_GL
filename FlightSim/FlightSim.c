@@ -50,6 +50,10 @@ GLfloat lightPosition[] = {0.0, 60.0, 0.0, 1.0};
 // Set default plane position
 GLfloat planePosition[] = {0, 0.5, 6.0};
 
+
+// Set default world position
+GLfloat worldPosition[] = {0.0, 0.0, 0.0};
+
 // Window size parameters
 GLfloat windowWidth  = 640.0;
 GLfloat windowHeight = 640.0;
@@ -106,6 +110,19 @@ int backwardPressed = 0;
 // Plane speed, this is the plane speed
 GLfloat planeSpeed = 0.1;
 
+// Get the amount to tilt the plane
+GLfloat sideTilt = 0.0;
+
+// Global mouse position
+float mouseX = 0.0;
+float mouseY = 0.0;
+
+GLfloat ratioOfTilt = 0.0;
+
+// Maximum distance from center mouse can move (this is also middle of screen)
+GLfloat maxMouseMove = 0.0;
+
+GLfloat turnAngle = 0.0;
 
 // This handles full screen or getting out of full screen
 void fullScreen() {
@@ -117,14 +134,122 @@ void fullScreen() {
 	}
 }
 
+// Keeps track of mouse position and moves plane accordingly
+void mousePosition(int x, int y) {
+	// Where the mouse is
+	int left = 0;
+	int right = 0;
+	int center = 0;
+	int	distanceFromCenter = 0;
+
+	// Set max mouse movment and middle of screen
+	maxMouseMove = windowWidth/2.0;
+
+	// Check if going to left or right or center
+	if(x == (int)maxMouseMove) {
+		center = 1;
+		left = 0;
+		right = 0;
+	} else if(x > (int)maxMouseMove) {
+		center = 0;
+		left = 0;
+		right = 1;
+	} else if(x < (int)maxMouseMove) {
+		center = 0;
+		left = 1;
+		right = 0;
+	}
+
+	// Calculate how far to move and tilt the plane
+	if(left) {
+		// Calculate percentage to the left and move
+		distanceFromCenter = (int)maxMouseMove - x;
+		// Calculate ratio
+		ratioOfTilt = -1 * distanceFromCenter/maxMouseMove;
+	}
+	else if(right) {
+		// Calculate percentage to right and move
+		distanceFromCenter = x - (int)maxMouseMove;
+		// Calculate ratio
+		ratioOfTilt = distanceFromCenter/maxMouseMove;
+	} else if(center) {
+		// Dont do anything right now
+	}
+
+	// Translate the plane to the left or right depending on ratio, with max tilt being 45 degrees
+	if(left) {
+		sideTilt = 45 * ratioOfTilt;
+	} else if(right) {
+		sideTilt = 45 * ratioOfTilt;
+	} else {
+		sideTilt = 0;
+	}
+	
+}
+
+// This handles propeller movmenets when rotating
+void moveProp() {
+	// Check if we should rotate a certain way depending on where the plane is moving
+	if(downPressed) {
+		// Add tilt to prop
+		glRotatef(-8, 1.0f, 0.0f, 0.0f);
+	}
+
+	if(forwardPressed) {
+		// Add tilt to prop
+		glRotatef(-5, 1.0f, 0.0f, 0.0f);
+	}
+
+	if(backwardPressed) {
+		// Add tilt to prop
+		glRotatef(5, 1.0f, 0.0f, 0.0f);
+	}
+}
+
+// Draws the propellers
+void drawProps() {
+	// Draw first propeller
+	glPushMatrix();
+		// Position it in front of plane
+		glTranslatef(planePosition[0]-0.35, planePosition[1]-0.1, planePosition[2]-0.05);
+		// Rotate propellers if need be
+		moveProp();
+		// Rotate so it is facing away
+		glRotatef(-90, 0.0f, 1.0f, 0.0f);
+		// Rotate propeller
+		glRotatef(propInterp*360, 1.0f, 0.0f, 0.0f);
+		glTranslatef(0, 0.15f, -0.35f);
+
+		// Draw propeller
+		glCallList(theProp);
+	glPopMatrix();
+
+	// Draw second propeller
+	glPushMatrix();
+		// Position it in front of plane
+		glTranslatef(planePosition[0]+0.35, planePosition[1]-0.1, planePosition[2]-0.05);
+		// Rotate propellers if need be
+		moveProp();
+		// Rotate so it is facing away
+		glRotatef(-90, 0.0f, 1.0f, 0.0f);
+		// Rotate propeller
+		glRotatef(propInterp*360, 1.0f, 0.0f, 0.0f);
+		glTranslatef(0, 0.15f, -0.35f);
+
+		// Draw propeller
+		glCallList(theProp);
+	glPopMatrix();
+}
+
 // This handles plane movments on key presses or mouse changes
 void movePlane() {
+	// Move the plane to planes position
+	glTranslatef(planePosition[0], planePosition[1], planePosition[2]);
+
 	// Check if we should rotate a certain way depending on where the plane is moving
 	if(upPressed) {
 		// Update camera position and plane position
-		cameraPosition[1] += 0.05;
-		cameraPosition[4] += 0.05;
-		planePosition[1] += 0.05;
+		worldPosition[1] -= 0.05;
 
 		// Add tilt to plane
 		glRotatef(8, 1.0f, 0.0f, 0.0f);
@@ -132,9 +257,7 @@ void movePlane() {
 
 	if(downPressed) {
 		// Update camera position and plane position
-		cameraPosition[1] -= 0.05;
-		cameraPosition[4] -= 0.05;
-		planePosition[1] -= 0.05;
+		worldPosition[1] += 0.05;
 
 		// Add tilt to plane
 		glRotatef(-8, 1.0f, 0.0f, 0.0f);
@@ -156,25 +279,6 @@ void movePlane() {
 		}
 
 		// Add tilt to plane
-		glRotatef(5, 1.0f, 0.0f, 0.0f);
-	}
-}
-
-// This handles propeller movmenets when rotating
-void moveProp() {
-	// Check if we should rotate a certain way depending on where the plane is moving
-	if(downPressed) {
-		// Add tilt to prop
-		glRotatef(-8, 1.0f, 0.0f, 0.0f);
-	}
-
-	if(forwardPressed) {
-		// Add tilt to prop
-		glRotatef(-5, 1.0f, 0.0f, 0.0f);
-	}
-
-	if(backwardPressed) {
-		// Add tilt to prop
 		glRotatef(5, 1.0f, 0.0f, 0.0f);
 	}
 }
@@ -267,43 +371,6 @@ void setUpProp() {
 		glEndList();
 	}
 	fclose (fileStream);
-}
-
-// Draws the propellers
-void drawProps() {
-	// Draw first propeller
-	glPushMatrix();
-		// Position it in front of plane
-		glTranslatef(planePosition[0]-0.35, planePosition[1]-0.1, planePosition[2]-0.05);
-		// Rotate propellers if need be
-		moveProp();
-		// Rotate so it is facing away
-		glRotatef(-90, 0.0f, 1.0f, 0.0f);
-
-		// Rotate propeller
-		glRotatef(propInterp*360, 1.0f, 0.0f, 0.0f);
-		glTranslatef(0, 0.15f, -0.35f);
-
-		// Draw propeller
-		glCallList(theProp);
-	glPopMatrix();
-
-	// Draw second propeller
-	glPushMatrix();
-		// Position it in front of plane
-		glTranslatef(planePosition[0]+0.35, planePosition[1]-0.1, planePosition[2]-0.05);
-		// Rotate propellers if need be
-		moveProp();
-		// Rotate so it is facing away
-		glRotatef(-90, 0.0f, 1.0f, 0.0f);
-
-		// Rotate propeller
-		glRotatef(propInterp*360, 1.0f, 0.0f, 0.0f);
-		glTranslatef(0, 0.15f, -0.35f);
-
-		// Draw propeller
-		glCallList(theProp);
-	glPopMatrix();
 }
 
 // Sets up the plane by reading it in
@@ -415,10 +482,15 @@ void setUpPlane() {
 
 // Draws the plane
 void drawPlane() {
-	glPushMatrix();
-		glTranslatef(planePosition[0], planePosition[1], planePosition[2]);
+	// Always check for the planes tilt
+	glRotatef(sideTilt*-1, 0.0f, 0.0f, 1.0f);
+	// Draw propellers
+	drawProps();
+	// Draw plane
+	glPushMatrix();	
 		// Moves the plane and propellers
 		movePlane();
+		
 		// Rotate the ship so it is facing away
 		glRotatef(-90, 0.0f, 1.0f, 0.0f);
 		glCallList(thePlane);
@@ -779,16 +851,28 @@ void init(void)
 *************************************************************************/
 void myIdle(void)
 {
+	// Set the turnspeed to 0
+	GLfloat turnSpeed = 0.0;
+
 	// Increase plane position by speed
-	cameraPosition[2] -= planeSpeed;
-	cameraPosition[5] -= planeSpeed;
-	planePosition[2] -= planeSpeed;
+	worldPosition[2] += planeSpeed;
 
 	// Rotation speed of the plane
 	if(propInterp >= 1.0) {
 		propInterp = 0;
 	} else {
 		propInterp += 0.05;
+	}
+
+	// Calculate the rotation speed of turning
+	turnSpeed += 5* ratioOfTilt;
+
+	// Increase the angle of turning by the turn speed
+	turnAngle += turnSpeed; 
+
+	// Reset turn angle if goes over 360
+	if(turnAngle > 360) {
+		turnAngle = 0;
 	}
 
 	// Force a redraw in OpenGL
@@ -849,20 +933,26 @@ void display(void)
 	// Set light position
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 
-	// Draw the frame of reference and basic grid
-	if(isSeaAndSky) {
-		// Draw sky and sea and enable the fog for sea
-		drawSkyAndSea();
-	} else {
-		drawFrameReferenceGrid();
-		// Disable the fog
-		glDisable(GL_FOG);
-	}
+	glPushMatrix();
+		// Translate the world around the plane
+		glTranslatef(worldPosition[0], worldPosition[1], worldPosition[2]);
+		// Rotate the world around the plane
+		glRotatef(turnAngle, 0.0f, 1.0f, 0.0f);
+		// Draw the frame of reference and basic grid
+		if(isSeaAndSky) {
+			// Draw sky and sea and enable the fog for sea
+			drawSkyAndSea();
+		} else {
+			drawFrameReferenceGrid();
+			// Disable the fog
+			glDisable(GL_FOG);
+		}
+	glPopMatrix();
 
-	drawPlane();
-
-	// Draw propellers
-	drawProps();
+	glPushMatrix();
+		// Draw plane
+		drawPlane();
+	glPopMatrix();
 
 	// Swap the drawing buffers here
 	glutSwapBuffers();
@@ -899,6 +989,8 @@ void main(int argc, char** argv)
 	glutSpecialFunc(specialKeys);
 	// This checks when a special key is released
 	glutSpecialUpFunc(specialKeysReleased);
+	// Set up mouse function
+	glutPassiveMotionFunc(mousePosition);
 	// register redraw function
 	glutDisplayFunc(display);
 	// Register the resize function

@@ -87,6 +87,9 @@ GLfloat planeSpeed = 0.05;
 // Get the amount to tilt the plane
 GLfloat sideTilt = 0.0;
 
+// Set the turnspeed to 0
+GLfloat turnSpeed = 0.0;
+
 // Global mouse position of x
 float mouseX = 0.0;
 
@@ -126,13 +129,25 @@ color4 grey = {0.05, 0.05, 0.05, 1.0};
 color4 seaBlue = {0.0, 0.3, 0.8, 1.0};
 color4 orange = {1.0, 0.5, 0.0, 1.0};
 
+/* Define lighting colors */
+
+// Set up light colors
+GLfloat diffuse[] = {1.0, 1.0, 1.0, 1.0};
+GLfloat ambient[] = {1.0, 1.0, 1.0, 1.0};
+GLfloat specular[] = {1.0, 1.0, 1.0, 1.0};
+
+// Set global ambient
+GLfloat globalAmbient[] = {0.05, 0.05, 0.05, 1.0};
+
 
 // Function name list
 void fullScreen();
 void mousePosition(int x, int y);
 void drawProps();
-void movePlane();
-void setUpFog();
+void moveAllPlane();
+void enableFog();
+void wireRenderingCheck();
+void lightingSetUp();
 void setUpProp();
 void setUpPlane();
 void drawPlane();

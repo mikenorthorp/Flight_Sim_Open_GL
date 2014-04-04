@@ -73,6 +73,7 @@ void planeTricks() {
 	if(rollEnabled) {
 		if(rollHeight < 1.0) {
 		 	glTranslatef(0.0, rollHeight, 0.0);
+			glRotatef(20.0f, 1.0f, 0.0f, 0.0f);
 		} else {
 			glRotatef(rollAmount, 0.0f, 0.0f, 1.0f);
 			glTranslatef(0.0f, (1-rollAmount/360) * 1.0, 0.0f);
@@ -83,12 +84,12 @@ void planeTricks() {
 	if(crazyRollEnabled) {
 		if(rollHeight < 1.0) {
 		 	glTranslatef(0.0, rollHeight, 0.0);
+			glRotatef(20.0f, 1.0f, 0.0f, 0.0f);
 		} else {
 			glRotatef(rollAmount, 0.0f, 0.0f, 1.0f);
 			glRotatef(rollAmount, 1.0f, 0.0f, 0.0f);
 			glTranslatef(0.0f, (1-rollAmount/360) * 1.0, 0.0f);
 		}
-
 	}
 }
 
@@ -985,17 +986,19 @@ void myIdle(void)
 	// Plane trick interp
 	if(rollEnabled || crazyRollEnabled) {
 		if(rollAmount >= 360) {
+			// Resets all roll variables if hits 360
 			rollEnabled = 0;
 			crazyRollEnabled = 0;
 			rollAmount = 0;
 			rollHeight = 0;
 		} else {
+			// Increases the height to start the roll
 			if(rollHeight <= 1.0) {
 				rollHeight += 0.1;
 			} else {
+				// Increases the roll angle
 				rollAmount += 4;
 			}
-
 		}
 	}
 
@@ -1286,7 +1289,6 @@ void loadSky()
 
 *************************************************************************/
 void setUpTexture() {
-	printf("%d %d", imageWidthSky, imageHeightSky);
 	// Bind the texture
 	glGenTextures(1, &seaTextureID);
 

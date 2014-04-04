@@ -64,6 +64,9 @@ GLuint thePlane = 0;
 // Set up display list for propeller
 GLuint theProp = 0;
 
+// Sets up the grid for frame reference
+GLuint theGrid = 0;
+
 /* Vertex and normal arrays for plane and propeller */
 
 // This is an array of all the vertices for the plane
@@ -182,6 +185,7 @@ void setUpProp();
 void setUpPlane();
 void drawPlane();
 void drawSkyAndSea();
+void setUpFrameReferenceGrid();
 void drawFrameReferenceGrid();
 void normalKeys(unsigned char key, int x, int y);
 void specialKeys(int key, int x, int y);

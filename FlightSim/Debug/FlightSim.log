@@ -1,4 +1,4 @@
-﻿Build started 04/04/2014 10:03:42 AM.
+﻿Build started 04/04/2014 11:53:46 AM.
      1>Project "C:\Users\Mike\Documents\Visual Studio 2012\Projects\FlightSim\FlightSim\FlightSim.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"C:\Users\Mike\Documents\glew-1.10.0\include" /IC:\Users\Mike\Documents\freeglut\include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TC /analyze- /errorReport:prompt FlightSim.c
@@ -8,55 +8,95 @@
      1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.h(128): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
      1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.h(129): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
      1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.h(140): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(35): warning C4244: 'function' : conversion from 'GLfloat' to 'int', possible loss of data
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(88): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(90): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(93): warning C4244: 'function' : conversion from 'GLfloat' to 'GLsizei', possible loss of data
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(124): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(169): warning C4305: 'function' : truncation from 'double' to 'GLfloat'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(184): warning C4305: 'function' : truncation from 'double' to 'GLfloat'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(214): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(223): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(232): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(243): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(267): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(275): warning C4305: 'function' : truncation from 'double' to 'GLfloat'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(299): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(46): warning C4244: 'function' : conversion from 'GLfloat' to 'int', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(101): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(103): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(106): warning C4244: 'function' : conversion from 'GLfloat' to 'GLsizei', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(137): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(182): warning C4305: 'function' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(197): warning C4305: 'function' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(227): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(236): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(245): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(256): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(280): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(288): warning C4305: 'function' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(312): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(218) : see declaration of 'fopen'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(313): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(326): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(311) : see declaration of 'sscanf'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(317): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(330): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(311) : see declaration of 'sscanf'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(320): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(333): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(311) : see declaration of 'sscanf'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(323): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(336): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(200) : see declaration of 'strtok'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(325): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(338): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(200) : see declaration of 'strtok'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(349): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(362): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(200) : see declaration of 'strtok'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(384): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(397): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(218) : see declaration of 'fopen'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(398): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(411): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(311) : see declaration of 'sscanf'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(402): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(415): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(311) : see declaration of 'sscanf'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(405): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(418): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(311) : see declaration of 'sscanf'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(408): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(421): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(200) : see declaration of 'strtok'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(410): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(423): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(200) : see declaration of 'strtok'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(465): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(478): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(200) : see declaration of 'strtok'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(639): warning C4305: 'function' : truncation from 'double' to 'GLfloat'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(844): warning C4244: 'function' : conversion from 'GLfloat' to 'int', possible loss of data
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(892): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(924): warning C4244: '+=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(925): warning C4244: '-=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(930): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(931): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(932): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(669): warning C4305: 'function' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(874): warning C4244: 'function' : conversion from 'GLfloat' to 'int', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(923): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(955): warning C4244: '+=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(956): warning C4244: '-=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(961): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(962): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(963): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1005): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(218) : see declaration of 'fopen'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1008): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(237) : see declaration of 'fscanf'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1021): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(237) : see declaration of 'fscanf'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1027): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(237) : see declaration of 'fscanf'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1033): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(237) : see declaration of 'fscanf'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1040): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(237) : see declaration of 'fscanf'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1052): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1062): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(237) : see declaration of 'fscanf'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1075): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(237) : see declaration of 'fscanf'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1078): warning C4244: '=' : conversion from 'float' to 'GLubyte', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1079): warning C4244: '=' : conversion from 'float' to 'GLubyte', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1080): warning C4244: '=' : conversion from 'float' to 'GLubyte', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1122): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(218) : see declaration of 'fopen'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1125): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(237) : see declaration of 'fscanf'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1138): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(237) : see declaration of 'fscanf'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1144): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(237) : see declaration of 'fscanf'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1150): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(237) : see declaration of 'fscanf'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1157): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(237) : see declaration of 'fscanf'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1169): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1179): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(237) : see declaration of 'fscanf'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1192): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(237) : see declaration of 'fscanf'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1195): warning C4244: '=' : conversion from 'float' to 'GLubyte', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1196): warning C4244: '=' : conversion from 'float' to 'GLubyte', possible loss of data
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(1197): warning C4244: '=' : conversion from 'float' to 'GLubyte', possible loss of data
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Mike\Documents\Visual Studio 2012\Projects\FlightSim\Debug\FlightSim.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Users\Mike\Documents\glew-1.10.0\lib" /LIBPATH:C:\Users\Mike\Documents\freeglut\lib freeglut.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Mike\Documents\Visual Studio 2012\Projects\FlightSim\Debug\FlightSim.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Mike\Documents\Visual Studio 2012\Projects\FlightSim\Debug\FlightSim.lib" /MACHINE:X86 Debug\FlightSim.obj
          FlightSim.vcxproj -> C:\Users\Mike\Documents\Visual Studio 2012\Projects\FlightSim\Debug\FlightSim.exe
@@ -64,4 +104,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.52
+Time Elapsed 00:00:01.28

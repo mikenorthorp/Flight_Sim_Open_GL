@@ -12,16 +12,7 @@
 // Include headerfile for header, function and variable set up
 #include "FlightSim.h"
 
-/* Set up image stuff for loading in PPM */
-// Image size
-int imageWidthSea, imageHeightSea, imageWidthSky, imageHeightSky;
-
-int seaTextureID;
-int skyTextureID;
-GLubyte *imageDataSea;
-GLubyte *imageDataSky;
-
-
+#include <stdlib.h>
 
 /************************************************************************
 
@@ -36,8 +27,10 @@ GLubyte *imageDataSky;
 *************************************************************************/
 void main(int argc, char** argv)
 {
-	// Load the images in
+	// Load the images in for sea and sky
 	loadSea();
+	loadSky();
+
 	// initialize the toolkit
 	glutInit(&argc, argv);
 	// set display mode
@@ -552,17 +545,25 @@ void drawSkyAndSea() {
 
 	// Set up normals
 	glShadeModel(GL_SMOOTH);
-	gluQuadricNormals(quadricCylinder, GLU_SMOOTH);
+
 	gluQuadricDrawStyle(quadricDisk, GLU_SMOOTH);
+	gluQuadricDrawStyle(quadricCylinder, GLU_SMOOTH);
 
 	// Set up textures
 	gluQuadricTexture(quadricCylinder, GL_TRUE);
 	gluQuadricTexture(quadricDisk, GL_TRUE);
 
+	// Set up the quadric normals
+	gluQuadricNormals(quadricDisk, GLU_SMOOTH);
+	gluQuadricNormals(quadricCylinder, GLU_SMOOTH);
+
+	// Bind the texture to the quadric
+
 	// Set up texture for disk base (sea)
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, skyTextureID);
 	gluQuadricTexture(quadricCylinder, skyTextureID);
+
 	// Draw cylinder
 	glPushMatrix();
 		// Set line width
@@ -585,7 +586,9 @@ void drawSkyAndSea() {
 
 	glPushMatrix();
 		// Enable fog for sea only
-		enableFog();
+		if(isFog) {
+			enableFog();
+		}
 		// Line width is 1
 		glLineWidth(1);
 		// Move it to correct position
@@ -594,7 +597,7 @@ void drawSkyAndSea() {
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, seaBlue);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, grey);
 		// Set up the size (obj, inner, outer, slices, stacks)
-		gluDisk(quadricCylinder, 0, 201, 100, 100);
+		gluDisk(quadricDisk, 0, 201, 100, 100);
 	glPopMatrix();
 
 	// Disable the texture
@@ -742,6 +745,10 @@ void normalKeys(unsigned char key, int x, int y) {
 			// Set full screen to opposite
 			isSeaAndSky = !isSeaAndSky;
 			break;
+		case 'b':
+			// Set fog off if the sea sky is enabled
+			isFog = !isFog;
+			break;
 		// Quit the program gracefully
 		case 'q':
 			exit(0);
@@ -819,11 +826,18 @@ void specialKeysReleased(int key, int x, int y) {
 
 *************************************************************************/
 void printOutControls() {
-	printf("Scene Controls\n--------------\n");
+	printf("\nScene Controls\n--------------\n");
 	printf("w: Toggle between wireframe and solid draw mode\n");
 	printf("f: Toggle between fullscreen and non fullscreen\n");
 	printf("s: Toggle between sea and sky and frame reference grid\n");
+	printf("b: Toggle between fog on and off when in sea and sky mode\n");
 	printf("q: Quit the program\n");
+	printf("\nPlane Controls\n--------------\n");
+	printf("Up Arrow: Go up in height\n");
+	printf("Down Arrow: Go down in height\n");
+	printf("Page Up: Speed up\n");
+	printf("Page Down: Slow down\n");
+	printf("Mouse left or right: Turn left or right\n");
 }
 
 /************************************************************************
@@ -1046,7 +1060,7 @@ void loadSea()
 	totalPixels = imageWidthSea * imageHeightSea;
 
 	// allocate enough memory for the image  (3*) because of the RGB data
-	imageDataSea = malloc(3 * sizeof(GLuint) * totalPixels);
+	imageDataSea = (GLubyte*)malloc(3 * sizeof(GLuint) * totalPixels);
 
 	// determine the scaling for RGB values
 	RGBScaling = 255.0 / maxValue;
@@ -1163,7 +1177,7 @@ void loadSky()
 	totalPixels = imageWidthSky * imageHeightSky;
 
 	// allocate enough memory for the image  (3*) because of the RGB data
-	imageDataSky = malloc(3 * sizeof(GLuint) * totalPixels);
+	imageDataSky = (GLubyte*)malloc(3 * sizeof(GLuint) * totalPixels);
 
 	// determine the scaling for RGB values
 	RGBScaling = 255.0 / maxValue;
@@ -1202,7 +1216,15 @@ void loadSky()
 	fclose(fileID);
 }
 
+/************************************************************************
+
+	Function:		setUpTexture
+
+	Description:	This sets up the textures for binding to sea and sky.
+
+*************************************************************************/
 void setUpTexture() {
+	printf("%d %d", imageWidthSky, imageHeightSky);
 	// Bind the texture
 	glGenTextures(1, &seaTextureID);
 
@@ -1212,11 +1234,12 @@ void setUpTexture() {
 	// Set up texture
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 
 	// Build the mipmaps
-	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, imageHeightSea, imageWidthSea, GL_RGB, GL_UNSIGNED_BYTE, imageDataSea);
+	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, imageWidthSea, imageHeightSea, GL_RGB, GL_UNSIGNED_BYTE, imageDataSea);
 
 	// Bind the texture
 	glGenTextures(1, &skyTextureID);
@@ -1227,11 +1250,12 @@ void setUpTexture() {
 	// Set up texture
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 
 	// Build the mipmaps
-	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, imageHeightSky, imageWidthSky, GL_RGB, GL_UNSIGNED_BYTE, imageDataSky);
+	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, imageWidthSky, imageHeightSky, GL_RGB, GL_UNSIGNED_BYTE, imageDataSky);
 }
 
 /************************************************************************
@@ -1266,6 +1290,8 @@ void display(void)
 			// Draw sky and sea and enable the fog for sea
 			drawSkyAndSea();
 		} else {
+			// Reset fog to be enabled when we switch back
+			isFog = 1;
 			// Draw frame and refercne grid
 			drawFrameReferenceGrid();
 		}

@@ -110,6 +110,9 @@ GLint isFullScreen = 0;
 GLint isWireRendering = 1;
 // Sea ad sky enabled
 GLint isSeaAndSky = 0;
+// Fog enabled
+GLint isFog = 1;
+
 // Toggles for directions key pressed and not pressed
 GLint upPressed = 0;
 GLint downPressed = 0;
@@ -138,6 +141,19 @@ GLfloat specular[] = {1.0, 1.0, 1.0, 1.0};
 
 // Set global ambient
 GLfloat globalAmbient[] = {0.05, 0.05, 0.05, 1.0};
+
+/* Set up image stuff for loading in PPM */
+
+// Image sizes for sea and sky
+int imageWidthSea, imageHeightSea, imageWidthSky, imageHeightSky;
+
+// Int ids for the textures
+GLuint seaTextureID;
+GLuint skyTextureID;
+
+// Pointers to store the texture data
+GLubyte *imageDataSea;
+GLubyte *imageDataSky;
 
 
 // Function name list

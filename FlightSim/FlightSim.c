@@ -63,6 +63,37 @@ void main(int argc, char** argv)
 
 /************************************************************************
 
+	Function:		planeTricks
+
+	Description:	Causes the plane to do tricks for bonus
+
+*************************************************************************/
+void planeTricks() {
+	// This causes a basic roll
+	if(rollEnabled) {
+		if(rollHeight < 1.0) {
+		 	glTranslatef(0.0, rollHeight, 0.0);
+		} else {
+			glRotatef(rollAmount, 0.0f, 0.0f, 1.0f);
+			glTranslatef(0.0f, (1-rollAmount/360) * 1.0, 0.0f);
+		}
+	}
+
+	// Does a crazy roll
+	if(crazyRollEnabled) {
+		if(rollHeight < 1.0) {
+		 	glTranslatef(0.0, rollHeight, 0.0);
+		} else {
+			glRotatef(rollAmount, 0.0f, 0.0f, 1.0f);
+			glRotatef(rollAmount, 1.0f, 0.0f, 0.0f);
+			glTranslatef(0.0f, (1-rollAmount/360) * 1.0, 0.0f);
+		}
+
+	}
+}
+
+/************************************************************************
+
 	Function:		fullScreen
 
 	Description:	Handles a fullscreen or non fullscreen of the window.
@@ -258,6 +289,9 @@ void moveAllPlane() {
 		glRotatef(-turnAngle, 0.0f, 1.0f, 0.0f);
 		// Adds tilt
 		glRotatef(sideTilt*-1, 0.0f, 0.0f, 1.0f);
+
+		// Do plane tricks
+		planeTricks();
 }
 
 /************************************************************************
@@ -494,7 +528,6 @@ void drawPlane() {
 
 	// Draw plane
 	glPushMatrix();
-
 		// Move plane and propellers depending on buttons pressed and
 		// mouse position
 		moveAllPlane();
@@ -749,6 +782,18 @@ void normalKeys(unsigned char key, int x, int y) {
 			// Set fog off if the sea sky is enabled
 			isFog = !isFog;
 			break;
+		case 'r':
+			// Rotate for normal roll
+			rollEnabled = !rollEnabled;
+			// Reset the roll amount each time
+			rollAmount = 0.0f;
+			break;
+		case 'c':
+			// Rotate for a crazy roll
+			crazyRollEnabled = !crazyRollEnabled;
+			// Reset the roll amount each time
+			rollAmount = 0.0f;
+			break;
 		// Quit the program gracefully
 		case 'q':
 			exit(0);
@@ -935,6 +980,23 @@ void myIdle(void)
 		propInterp = 0;
 	} else {
 		propInterp += 0.05;
+	}
+
+	// Plane trick interp
+	if(rollEnabled || crazyRollEnabled) {
+		if(rollAmount >= 360) {
+			rollEnabled = 0;
+			crazyRollEnabled = 0;
+			rollAmount = 0;
+			rollHeight = 0;
+		} else {
+			if(rollHeight <= 1.0) {
+				rollHeight += 0.1;
+			} else {
+				rollAmount += 4;
+			}
+
+		}
 	}
 
 	// Make sure turn speed starts at 0

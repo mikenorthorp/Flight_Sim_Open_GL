@@ -102,6 +102,12 @@ GLfloat maxMouseMove = 0.0;
 // This is the angle to turn the plane by based on mouse position
 GLfloat turnAngle = 0.0;
 
+// This is the the roll interp when doing a roll trick
+GLfloat rollAmount = 0.0;
+
+// Roll height to interp too
+GLfloat rollHeight = 0.0;
+
 /* Key checks to see if pressed or not */
 
 // Not full screen by default
@@ -112,6 +118,10 @@ GLint isWireRendering = 1;
 GLint isSeaAndSky = 0;
 // Fog enabled
 GLint isFog = 1;
+// If roll is enabled
+GLint rollEnabled = 0;
+// Crazy roll
+GLint crazyRollEnabled = 0;
 
 // Toggles for directions key pressed and not pressed
 GLint upPressed = 0;
@@ -163,6 +173,7 @@ void drawProps();
 void setUpTexture();
 void loadSea();
 void loadSky();
+void planeTricks();
 void moveAllPlane();
 void enableFog();
 void wireRenderingCheck();

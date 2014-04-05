@@ -12,8 +12,6 @@
 // Include headerfile for header, function and variable set up
 #include "FlightSim.h"
 
-#include <stdlib.h>
-
 /************************************************************************
 
 	Function:		main
@@ -28,7 +26,9 @@
 void main(int argc, char** argv)
 {
 	// Load the images in for sea and sky
+	// Load sea
 	loadSea();
+	// Load sky
 	loadSky();
 
 	// initialize the toolkit
@@ -230,6 +230,84 @@ void drawProps() {
 		// Draw propeller
 		glCallList(theProp);
 	glPopMatrix();
+}
+
+/************************************************************************
+
+	Function:		setUpMountains
+
+	Description:	Sets up random values for mountains
+
+*************************************************************************/
+void setUpMountains() {
+	int i = 0;
+
+	// Set a new random seed value
+	srand (time(0));
+
+	// Get a random number of mountains to draw between 10 and 3
+	// numMountains = (rand()%(10-3))+3;
+	numMountains = 10;
+
+	// Set up heights for mountains
+	for(i=0; i<numMountains;i++) {
+
+		// Set up cone
+		quadricCone[i] = gluNewQuadric();
+
+		// Generate a random height
+		randHeightList[i] = (rand()%(10-2))+2;
+		// Generate a random base width
+		baseWidthList[i] = (rand()%(4-1))+1;
+
+		// Generate a random x
+		randXList[i] = (rand()%(150+150))-150;
+		// Generate a random y
+		randZList[i] = (rand()%(150+150))-150;
+		printf("%d", randZList[i]);
+	}
+}
+
+/************************************************************************
+
+	Function:		drawMountains
+
+	Description:	Draws some simple mountains.
+
+*************************************************************************/
+void drawMountains() {
+	int i = 0;
+
+	// Draw all mountains
+	for(i=0; i<numMountains;i++) {
+		// Enable or disable wirerendering based on button press
+		wireRenderingCheck();
+		// Set up normals
+		glShadeModel(GL_SMOOTH);
+
+		gluQuadricDrawStyle(quadricCone[i], GLU_SMOOTH);
+
+		// Set up textures
+		gluQuadricTexture(quadricCone[i], GL_TRUE);
+
+		// Set up the quadric normals
+		gluQuadricNormals(quadricCone[i], GLU_SMOOTH);
+		// Draw cone for mountain
+		glPushMatrix();
+			glTranslatef(randXList[i], 0.0f, randZList[i]);
+			glRotatef(-90, 1.0f, 0.0f, 0.0f);
+			// Set line width
+			glLineWidth(1);
+			// Set the colors
+			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, green);
+			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, grey);
+			// Set the size (obj, inner, outer, height, slices, stacks)
+			gluCylinder(quadricCone[i], baseWidthList[i], 0, randHeightList[i], 20, 20);
+		glPopMatrix();
+	}
+
+	// Reset color to blue
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, blue);
 }
 
 /************************************************************************
@@ -639,6 +717,8 @@ void drawSkyAndSea() {
 
 	// Disable the fog after drawing the disk base
 	glDisable(GL_FOG);
+
+	drawMountains();
 }
 
 /************************************************************************
@@ -884,6 +964,10 @@ void printOutControls() {
 	printf("Page Up: Speed up\n");
 	printf("Page Down: Slow down\n");
 	printf("Mouse left or right: Turn left or right\n");
+	printf("\nBonuses\n--------------\n");
+	printf("r: Do a barrel roll with the plane\n");
+	printf("c: Do a crazy roll with the plane\n");
+
 }
 
 /************************************************************************
@@ -960,6 +1044,9 @@ void init(void)
 
 	// Setup propeller
 	setUpProp();
+
+	// Set up mountains
+	setUpMountains();
 
 	// Print out the controls
 	printOutControls();
@@ -1289,13 +1376,13 @@ void loadSky()
 
 *************************************************************************/
 void setUpTexture() {
-	// Bind the texture
+	// Bind the texture for the sea
 	glGenTextures(1, &seaTextureID);
 
 	// Bind texture to id
 	glBindTexture(GL_TEXTURE_2D, seaTextureID);
 
-	// Set up texture
+	// Set up texture with various settings to wrapping
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_NEAREST);
@@ -1305,13 +1392,13 @@ void setUpTexture() {
 	// Build the mipmaps
 	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, imageWidthSea, imageHeightSea, GL_RGB, GL_UNSIGNED_BYTE, imageDataSea);
 
-	// Bind the texture
+	// Bind the  for the sky
 	glGenTextures(1, &skyTextureID);
 
 	// Bind texture to id
 	glBindTexture(GL_TEXTURE_2D, skyTextureID);
 
-	// Set up texture
+	// Set up texture with various settings to wrapping
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_NEAREST);

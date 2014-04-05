@@ -18,6 +18,8 @@
 #include <stdio.h>
 // Time header for random seeds
 #include <time.h>
+ // Include stdlib
+ #include <stdlib.h>
 
 /* Defines */
 
@@ -56,6 +58,9 @@ GLfloat windowHeight = 640.0;
 // Set up quadric objects
 GLUquadricObj* quadricCylinder;
 GLUquadricObj* quadricDisk;
+
+// Array of cones for mountains
+GLUquadricObj* quadricCone[11];
 
 /* Display list variables */
 // Set up display list for the plane
@@ -111,6 +116,15 @@ GLfloat rollAmount = 0.0;
 // Roll height to interp too
 GLfloat rollHeight = 0.0;
 
+// Number of mountains
+GLint numMountains = 0;
+
+// Random height, width and x and z position for mountains
+int randHeightList[11];
+int baseWidthList[11];
+int randXList[11];
+int randZList[11];
+
 /* Key checks to see if pressed or not */
 
 // Not full screen by default
@@ -144,6 +158,7 @@ color4 white = {1.0, 1.0, 1.0, 1.0};
 color4 grey = {0.05, 0.05, 0.05, 1.0};
 color4 seaBlue = {0.0, 0.3, 0.8, 1.0};
 color4 orange = {1.0, 0.5, 0.0, 1.0};
+color4 clear = {1.0, 1.0, 1.0, 0.0};
 
 /* Define lighting colors */
 
@@ -173,6 +188,7 @@ GLubyte *imageDataSky;
 void fullScreen();
 void mousePosition(int x, int y);
 void drawProps();
+void setUpMountains();
 void setUpTexture();
 void loadSea();
 void loadSky();

@@ -994,7 +994,6 @@ void printOutControls() {
 	printf("\nBonuses\n--------------\n");
 	printf("r: Do a barrel roll with the plane\n");
 	printf("c: Do a crazy roll with the plane\n");
-
 }
 
 /************************************************************************

@@ -266,7 +266,6 @@ void setUpMountains() {
 		randXList[i] = (rand()%(150+150))-150;
 		// Generate a random y
 		randZList[i] = (rand()%(150+150))-150;
-		printf("%d", randZList[i]);
 	}
 }
 

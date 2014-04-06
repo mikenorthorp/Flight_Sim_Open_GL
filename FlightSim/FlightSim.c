@@ -3,7 +3,11 @@
 
 	File: 			FlightSim.c
 
-	Description:	Flight sim
+	Description:	It is a flight simulator that has a plane flying around in a 3D environment.
+					The basic environment when you load up the program is a simple wireframe with
+					a frame of reference. You can switch to the sea and sky environment with the
+					controls below and fly around an area with lighting, mountains, sea and sky.
+					You can also toggle between wireframe drawing and full drawing.
 
 	Author:			Michael Northorp
 

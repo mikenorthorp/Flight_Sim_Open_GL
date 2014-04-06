@@ -25,11 +25,13 @@
 *************************************************************************/
 void main(int argc, char** argv)
 {
-	// Load the images in for sea and sky
+	// Load the images in for sea and sky and mountains
 	// Load sea
 	loadSea();
 	// Load sky
 	loadSky();
+	// Load mountains
+	loadMountain();
 
 	// initialize the toolkit
 	glutInit(&argc, argv);
@@ -245,20 +247,16 @@ void setUpMountains() {
 	// Set a new random seed value
 	srand (time(0));
 
-	// Get a random number of mountains to draw between 10 and 3
-	// numMountains = (rand()%(10-3))+3;
-	numMountains = 10;
-
 	// Set up heights for mountains
-	for(i=0; i<numMountains;i++) {
+	for(i=0; i<NUM_MOUNTAINS;i++) {
 
 		// Set up cone
 		quadricCone[i] = gluNewQuadric();
 
 		// Generate a random height
-		randHeightList[i] = (rand()%(10-2))+2;
+		randHeightList[i] = (rand()%(20-2))+2;
 		// Generate a random base width
-		baseWidthList[i] = (rand()%(4-1))+1;
+		baseWidthList[i] = (rand()%(7-1))+1;
 
 		// Generate a random x
 		randXList[i] = (rand()%(150+150))-150;
@@ -272,14 +270,20 @@ void setUpMountains() {
 
 	Function:		drawMountains
 
-	Description:	Draws some simple mountains.
+	Description:	Draws some simple mountains. (not fully random looking
+					but random height and width and size set.. textures
+					also work)
 
 *************************************************************************/
 void drawMountains() {
 	int i = 0;
 
+	if(mountainTextureEnabled) {
+		// Set up texture for mountains
+		glEnable(GL_TEXTURE_2D);
+	}
 	// Draw all mountains
-	for(i=0; i<numMountains;i++) {
+	for(i=0; i<NUM_MOUNTAINS;i++) {
 		// Enable or disable wirerendering based on button press
 		wireRenderingCheck();
 		// Set up normals
@@ -292,6 +296,13 @@ void drawMountains() {
 
 		// Set up the quadric normals
 		gluQuadricNormals(quadricCone[i], GLU_SMOOTH);
+
+		// Draw textures for mountain if enabled
+		if(mountainTextureEnabled) {
+			glBindTexture(GL_TEXTURE_2D, mountainTextureID);
+			gluQuadricTexture(quadricCone[i], mountainTextureID);
+		}
+
 		// Draw cone for mountain
 		glPushMatrix();
 			glTranslatef(randXList[i], 0.0f, randZList[i]);
@@ -299,11 +310,22 @@ void drawMountains() {
 			// Set line width
 			glLineWidth(1);
 			// Set the colors
-			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, green);
+			if(mountainTextureEnabled) {
+				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, white);
+			} else {
+				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, green);
+			}
 			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, grey);
+			// Make it not as shiny as plane
+			glMaterialf(GL_FRONT, GL_SHININESS, 200.0f);
+			glMaterialfv(GL_FRONT, GL_SPECULAR, blue);
 			// Set the size (obj, inner, outer, height, slices, stacks)
 			gluCylinder(quadricCone[i], baseWidthList[i], 0, randHeightList[i], 20, 20);
 		glPopMatrix();
+	}
+
+	if(mountainTextureEnabled) {
+		glDisable(GL_TEXTURE_2D);
 	}
 
 	// Reset color to blue
@@ -686,7 +708,7 @@ void drawSkyAndSea() {
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, orange);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, grey);
 		// Set the size (obj, inner, outer, height, slices, stacks)
-		gluCylinder(quadricCylinder, 200, 200, 200, 100, 100);
+		gluCylinder(quadricCylinder, 200, 200, 100, 100, 100);
 	glPopMatrix();
 
 	glDisable(GL_TEXTURE_2D);
@@ -875,6 +897,10 @@ void normalKeys(unsigned char key, int x, int y) {
 			// Reset the roll amount each time
 			rollAmount = 0.0f;
 			break;
+		case 't':
+			// Turn mountain textures on or off
+			mountainTextureEnabled = !mountainTextureEnabled;
+			break;
 		// Quit the program gracefully
 		case 'q':
 			exit(0);
@@ -957,6 +983,7 @@ void printOutControls() {
 	printf("f: Toggle between fullscreen and non fullscreen\n");
 	printf("s: Toggle between sea and sky and frame reference grid\n");
 	printf("b: Toggle between fog on and off when in sea and sky mode\n");
+	printf("t: Toggle between mountain textures on or off\n");
 	printf("q: Quit the program\n");
 	printf("\nPlane Controls\n--------------\n");
 	printf("Up Arrow: Go up in height\n");
@@ -1370,6 +1397,120 @@ void loadSky()
 
 /************************************************************************
 
+	Function:		loadMountain
+
+	Description:	Loads in the PPM image for mountain, this code is from the animation
+					slides for loading in an image.
+
+*************************************************************************/
+void loadMountain()
+{
+	// the ID of the image file
+	FILE *fileID;
+
+	// maxValue
+	int  maxValue;
+
+	// total number of pixels in the image
+	int  totalPixels;
+
+	// temporary character
+	char tempChar;
+
+	// counter variable for the current pixel in the image
+	int i;
+
+	// array for reading in header information
+	char headerLine[100];
+
+	float RGBScaling;
+
+	// temporary variables for reading in the red, green and blue data of each pixel
+	int red, green, blue;
+
+	// Read in the sea
+	fileID = fopen("mount03.ppm", "r");
+
+	// read in the first header line
+	fscanf(fileID,"%[^\n] ", headerLine);
+
+	// make sure that the image begins with 'P3', which signifies a PPM file
+	if ((headerLine[0] != 'P') || (headerLine[1] != '3'))
+	{
+		// printf("This is not a PPM file!\n");
+		exit(0);
+	}
+
+	// we have a PPM file
+	printf("Loading textures please wait...\n");
+
+	// read in the first character of the next line
+	fscanf(fileID, "%c", &tempChar);
+
+	// while we still have comment lines (which begin with #)
+	while(tempChar == '#')
+	{
+		// read in the comment
+		fscanf(fileID, "%[^\n] ", headerLine);
+
+		// // print the comment
+		// printf("%s\n", headerLine);
+
+		// read in the first character of the next line
+		fscanf(fileID, "%c",&tempChar);
+	}
+
+	// the last one was not a comment character '#', so we nee dto put it back into the file stream (undo)
+	ungetc(tempChar, fileID);
+
+	// read in the image hieght, width and the maximum value
+	fscanf(fileID, "%d %d %d", &imageWidthMountain, &imageHeightMountain, &maxValue);
+
+	// compute the total number of pixels in the image
+	totalPixels = imageWidthMountain * imageHeightMountain;
+
+	// allocate enough memory for the image  (3*) because of the RGB data
+	imageDataMountain = (GLubyte*)malloc(3 * sizeof(GLuint) * totalPixels);
+
+	// determine the scaling for RGB values
+	RGBScaling = 255.0 / maxValue;
+
+
+	// if the maxValue is 255 then we do not need to scale the
+	//    image data values to be in the range or 0 to 255
+	if (maxValue == 255)
+	{
+		for(i = 0; i < totalPixels; i++)
+		{
+			// read in the current pixel from the file
+			fscanf(fileID,"%d %d %d",&red, &green, &blue );
+
+			// store the red, green and blue data of the current pixel in the data array
+			imageDataMountain[3*totalPixels - 3*i - 3] = red;
+			imageDataMountain[3*totalPixels - 3*i - 2] = green;
+			imageDataMountain[3*totalPixels - 3*i - 1] = blue;
+		}
+	}
+	else  // need to scale up the data values
+	{
+		for(i = 0; i < totalPixels; i++)
+		{
+			// read in the current pixel from the file
+			fscanf(fileID,"%d %d %d",&red, &green, &blue );
+
+			// store the red, green and blue data of the current pixel in the data array
+			imageDataMountain[3*totalPixels - 3*i - 3] = red   * RGBScaling;
+			imageDataMountain[3*totalPixels - 3*i - 2] = green * RGBScaling;
+			imageDataMountain[3*totalPixels - 3*i - 1] = blue  * RGBScaling;
+		}
+	}
+
+	// close the image file
+	fclose(fileID);
+}
+
+/************************************************************************
+
 	Function:		setUpTexture
 
 	Description:	This sets up the textures for binding to sea and sky.
@@ -1392,7 +1533,7 @@ void setUpTexture() {
 	// Build the mipmaps
 	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, imageWidthSea, imageHeightSea, GL_RGB, GL_UNSIGNED_BYTE, imageDataSea);
 
-	// Bind the  for the sky
+	// Bind the for the sky
 	glGenTextures(1, &skyTextureID);
 
 	// Bind texture to id
@@ -1407,6 +1548,22 @@ void setUpTexture() {
 
 	// Build the mipmaps
 	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, imageWidthSky, imageHeightSky, GL_RGB, GL_UNSIGNED_BYTE, imageDataSky);
+
+	// Bind the for the mountain
+	glGenTextures(1, &mountainTextureID);
+
+	// Bind texture to id
+	glBindTexture(GL_TEXTURE_2D, mountainTextureID);
+
+	// Set up texture with various settings to wrapping
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+
+	// Build the mipmaps
+	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, imageWidthMountain, imageHeightMountain, GL_RGB, GL_UNSIGNED_BYTE, imageDataMountain);
 }
 
 /************************************************************************

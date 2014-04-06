@@ -30,6 +30,9 @@
 // Grid size X by X
 #define GRID_SIZE 100.0f
 
+// Number of mountains
+#define NUM_MOUNTAINS 50
+
 /* Global variables */
 
 /* Typedefs and structs */
@@ -60,7 +63,7 @@ GLUquadricObj* quadricCylinder;
 GLUquadricObj* quadricDisk;
 
 // Array of cones for mountains
-GLUquadricObj* quadricCone[11];
+GLUquadricObj* quadricCone[NUM_MOUNTAINS];
 
 /* Display list variables */
 // Set up display list for the plane
@@ -116,14 +119,11 @@ GLfloat rollAmount = 0.0;
 // Roll height to interp too
 GLfloat rollHeight = 0.0;
 
-// Number of mountains
-GLint numMountains = 0;
-
 // Random height, width and x and z position for mountains
-int randHeightList[11];
-int baseWidthList[11];
-int randXList[11];
-int randZList[11];
+int randHeightList[NUM_MOUNTAINS];
+int baseWidthList[NUM_MOUNTAINS];
+int randXList[NUM_MOUNTAINS];
+int randZList[NUM_MOUNTAINS];
 
 /* Key checks to see if pressed or not */
 
@@ -139,6 +139,8 @@ GLint isFog = 1;
 GLint rollEnabled = 0;
 // Crazy roll
 GLint crazyRollEnabled = 0;
+// Mountain textures on or off
+GLint mountainTextureEnabled = 0;
 
 // Toggles for directions key pressed and not pressed
 GLint upPressed = 0;
@@ -173,15 +175,17 @@ GLfloat globalAmbient[] = {0.05, 0.05, 0.05, 1.0};
 /* Set up image stuff for loading in PPM */
 
 // Image sizes for sea and sky
-int imageWidthSea, imageHeightSea, imageWidthSky, imageHeightSky;
+int imageWidthSea, imageHeightSea, imageWidthSky, imageHeightSky, imageWidthMountain, imageHeightMountain;
 
 // Int ids for the textures
 GLuint seaTextureID;
 GLuint skyTextureID;
+GLuint mountainTextureID;
 
 // Pointers to store the texture data
 GLubyte *imageDataSea;
 GLubyte *imageDataSky;
+GLubyte *imageDataMountain;
 
 
 // Function name list
@@ -192,6 +196,7 @@ void setUpMountains();
 void setUpTexture();
 void loadSea();
 void loadSky();
+void loadMountain();
 void planeTricks();
 void moveAllPlane();
 void enableFog();

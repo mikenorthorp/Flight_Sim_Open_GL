@@ -346,7 +346,13 @@ void moveAllPlane() {
 
 		// Check if we should rotate a certain way depending on where the plane is moving
 
-		// Plane goes up
+		// Always check for the planes tilt and rotation
+		// Add planes rotation
+		glRotatef(-turnAngle, 0.0f, 1.0f, 0.0f);
+		// Adds tilt
+		glRotatef(sideTilt*-1, 0.0f, 0.0f, 1.0f);
+
+				// Plane goes up
 		if(upPressed) {
 			// Update camera position and plane position
 			planePosition[1] += 0.05;
@@ -384,12 +390,6 @@ void moveAllPlane() {
 			// Add tilt to plane
 			glRotatef(5, 1.0f, 0.0f, 0.0f);
 		}
-
-		// Always check for the planes tilt and rotation
-		// Add planes rotation
-		glRotatef(-turnAngle, 0.0f, 1.0f, 0.0f);
-		// Adds tilt
-		glRotatef(sideTilt*-1, 0.0f, 0.0f, 1.0f);
 
 		// Do plane tricks
 		planeTricks();

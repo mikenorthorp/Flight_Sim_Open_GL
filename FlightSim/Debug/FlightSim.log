@@ -1,4 +1,4 @@
-﻿Build started 05/04/2014 9:11:15 PM.
+﻿Build started 05/04/2014 9:23:42 PM.
      1>Project "C:\Users\Mike\Documents\Visual Studio 2012\Projects\FlightSim\FlightSim\FlightSim.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"C:\Users\Mike\Documents\glew-1.10.0\include" /IC:\Users\Mike\Documents\freeglut\include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TC /analyze- /errorReport:prompt FlightSim.c
@@ -19,10 +19,10 @@
      1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(224): warning C4305: 'function' : truncation from 'double' to 'GLfloat'
      1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(248): warning C4244: 'function' : conversion from 'time_t' to 'unsigned int', possible loss of data
      1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(308): warning C4244: 'function' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(352): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(361): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(370): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
-     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(381): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(358): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(367): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(376): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(387): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
      1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(408): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
      1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(416): warning C4305: 'function' : truncation from 'double' to 'GLfloat'
      1>c:\users\mike\documents\visual studio 2012\projects\flightsim\flightsim\flightsim.c(440): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
@@ -129,4 +129,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.90
+Time Elapsed 00:00:01.01

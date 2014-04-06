@@ -189,32 +189,44 @@ GLubyte *imageDataMountain;
 
 
 // Function name list
-void fullScreen();
-void mousePosition(int x, int y);
-void drawProps();
+
+// Setup stuff
 void setUpMountains();
 void setUpTexture();
 void loadSea();
 void loadSky();
 void loadMountain();
-void planeTricks();
-void moveAllPlane();
-void enableFog();
-void wireRenderingCheck();
 void lightingSetUp();
 void setUpProp();
 void setUpPlane();
+void setUpFrameReferenceGrid();
+
+// Move objects
+void planeTricks();
+void moveAllPlane();
+
+// Drawing functions
 void drawPlane();
 void drawSkyAndSea();
-void setUpFrameReferenceGrid();
 void drawFrameReferenceGrid();
+void enableFog();
+void drawProps();
+
+// Keyboard and mouse listeners
 void normalKeys(unsigned char key, int x, int y);
 void specialKeys(int key, int x, int y);
 void specialKeysReleased(int key, int x, int y);
+void mousePosition(int x, int y);
+
+// Other
 void printOutControls();
+void myResize(int newWidth, int newHeight);
+void fullScreen();
+void wireRenderingCheck();
+
+// Main functions
 void init(void);
 void myIdle(void);
-void myResize(int newWidth, int newHeight);
 void display(void);
 
 #endif /* FLIGHTSIM_H_ */
